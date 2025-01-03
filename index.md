@@ -19,7 +19,7 @@ Laut den Vereinten Nationen werden jährlich 2 bis 5 % des globalen BIP – etwa
 Der Datensatz umfasst 5.078.345 Transaktionen und 11 Variablen. Er beschreibt Transaktionen zwischen Banken und Konten, einschließlich Zeitstempeln, Beträgen, Währungen, Zahlungsformaten und Labels, die Transaktionen als legal oder Geldwäsche kennzeichnen.
 
 Die Transaktionen erstrecken sich über 17 Tage ab dem 1. September 2022. Die meisten Daten stammen aus den ersten 10 Tagen, während die restlichen Tage weniger Aktivität zeigen. Auffällig ist das starke Ungleichgewicht: 99,9 % der Transaktionen sind legal, nur 0,1 % gelten als Geldwäsche. 
-<img src="assets/eda_tage.png" alt="eda_tage" style="float: left; margin-right: 20px; width: 300px;">
+<img src="assets/eda_tage.png" alt="eda_tage" class="hover-zoom" style="float: left; margin-right: 20px; width: 300px;">
 
 Der Datensatz umfasst 30.470 Banken und 515.080 Konten. Eine kleine Anzahl von Banken und Konten wickelt den Großteil der Transaktionen ab: Die 10 aktivsten Banken verantworten 18,1 % aller Transaktionen. Bei den Konten gibt es zentrale Akteure, von denen einige über 100.000 Transaktionen ausführen, während viele andere nur ein- oder zweimal aktiv sind.
 <img src="assets/eda_top30banken.png" alt="eda_top30banken" style="float: right; margin-left: 20px; width: 300px;">
