@@ -2,7 +2,7 @@
 title: "Fraud Detection Blog"
 tag_text: Biscuit
 description: "Insights into fraud detection using Machine Learning."
-# baseurl: "/blog" # the subpath of your site, e.g. /blog
+baseurl: "/fraud-detection-blog"
 url: "https://a-vannini.github.io/fraud-detection-blog"
 author:
   name: "Janis Frölich, Julia Locher, Alessia Vannini"
