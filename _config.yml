@@ -1,9 +1,11 @@
 # Site settings
-title: Biscuit Theme for Jekyll
+title: "Fraud Detection Blog"
 tag_text: Biscuit
-description: Biscuit is a single-page responsive Jekyll theme. This is the most simple and still-good-looking Jekyll theme that you can find.
+description: "Insights into fraud detection using Machine Learning."
 # baseurl: "/blog" # the subpath of your site, e.g. /blog
-# url: "https://example.com" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://a-vannini.github.io/fraud-detection-blog"
+author:
+  name: "Janis Frölich, Julia Locher, Alessia Vannini"
 
 plugins:
   - jekyll-seo-tag
@@ -13,3 +15,9 @@ markdown: kramdown
 exclude: ["README.md"]
 sass:
   style: compressed
+
+
+
+
+
+
