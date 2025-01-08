@@ -248,7 +248,7 @@ Graph-basierte Modelle erkennen versteckte Muster in Transaktionsnetzwerken, ind
 
 ### Graphen
 Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges) bestehen und zur Darstellung von Beziehungen zwischen Objekten verwendet werden. Knoten repräsentieren dabei die Objekte selbst, während die Kanten die Verbindungen zwischen diesen Objekten beschreiben. In der Graphentheorie unterscheidet man zwischen verschiedenen Arten von Graphen: 
-<!-- <img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;"> -->
+<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
 - Graphen ohne Mehrfachkanten:
     - Diese Graphen erlauben pro Knotenpaar maximal eine Kante. 
@@ -256,7 +256,8 @@ Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges)
 - Graphen mit Mehrfachkanten (Multigraphen):
     - Hier können mehrere Kanten zwischen denselben Knoten existieren, die unterschiedliche Relationen oder mehrfach vorkommende Transaktionen darstellen. 
     - Multigraphen können ebenfalls ungerichtet oder gerichtet sein. 
-<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+
+
 > Beispiel: Ein ungerichteter Graph zeigt eine soziale Verbindung, etwa Freundschaften, während ein gerichteter Graph Transaktionen oder Flüsse zwischen Konten darstellt.
 
 <img src="assets/graph.png" alt="graph" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
