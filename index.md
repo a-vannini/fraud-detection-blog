@@ -238,7 +238,6 @@ Beim **Oversampling** wird die Minderheitsklasse künstlich vergrössert, indem 
 
 
 ## Graph-basierte Modelle
-
 Graph-basierte Modelle erfassen im Gegensatz zu nicht graph-basierten Ansätzen die Beziehungen zwischen den Akteuren (Knoten) im Netzwerk. Jede Transaktion erscheint als Verbindung (Kante) zwischen zwei Akteuren, was ein vollständiges Transaktionsnetzwerk schafft. Dieser Ansatz eignet sich besonders, um Muster wie Simple Cycles oder Scatter-Gather-Strukturen zu erkennen, die typisch für Geldwäsche sind, wie im Kapitel Daten erklärt.  
 
 Im graph-basierten Teil unseres Projekts haben wir verschiedene Ansätze kombiniert: 
@@ -248,10 +247,9 @@ Im graph-basierten Teil unseres Projekts haben wir verschiedene Ansätze kombini
 Graph-basierte Modelle erkennen versteckte Muster in Transaktionsnetzwerken, indem sie direkt die Beziehungen zwischen Knoten und die Netzwerkstruktur einbeziehen. Sie nutzen die Verbindungen und den Kontext der Netzwerktopologie. Allerdings sind sie oft rechenintensiver und erfordern detailliertere Daten, wie die Netzwerktopologie und präzise definierte Knoten- und Kantenattribute. Ihre höhere Komplexität erschwert die Skalierung auf sehr große Netzwerke, da sowohl der Speicherbedarf als auch die Rechenzeit erheblich steigen.
 
 ### Graphen
-
 Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges) bestehen und zur Darstellung von Beziehungen zwischen Objekten verwendet werden. Knoten repräsentieren dabei die Objekte selbst, während die Kanten die Verbindungen zwischen diesen Objekten beschreiben. In der Graphentheorie unterscheidet man zwischen verschiedenen Arten von Graphen: 
-<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
-
+<!-- <img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;"> -->
+<img src="assets/graph.png" alt="graph" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 - Graphen ohne Mehrfachkanten:
     - Diese Graphen erlauben pro Knotenpaar maximal eine Kante. 
     - Die Verbindungen können dabei gerichtet oder ungerichtet sein. 
@@ -271,7 +269,7 @@ Um die Daten optimal für Training und Evaluierung zu trennen, führten wir eine
 
 
 Im nächsten Schritt teilten wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in großen Netzwerken, indem er iterativ die Modularity maximiert – ein Maß für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
-<img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+<img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 400px;">
 
 Um die beste Community-Einteilung zu erreichen, evaluierten wir in einer Schleife mehrere Varianten. Unser Ziel dabei ist es, die Anzahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) zu minimieren und gleichzeitig sicherzustellen, dass die Knotenverteilung in den Splits dem Verhältnis von 60% Training, 20% Validierung und 20% Test entspricht. Dieses Vorgehen ost entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. 
 
