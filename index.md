@@ -158,7 +158,7 @@ Vashistha et al. entwickelten das **Hyper Ensemble Machine Learning (HEML)**, da
 
 # Unsere Modelle 
 In unserem Projekt verfolgten wir zwei Ansätze, um Geldwäsche in einem unausgewogenen Datensatz aufzuspüren: nicht graph-basierte und graph-basierte Modelle. 
-<img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px 0; width: 400px;">
+<img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px 0; width: 300px;">
 
 
 ## Nicht graph-basiert
@@ -179,6 +179,7 @@ Dieser Baum liefert eine erste Einschätzung. GBT erstellt viele solcher Bäume 
 
 
 ### Data-Split 
+
 <img src="assets/datasplit_time.png" alt="datasplit_time" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
 Um maschinelle Lernmodelle zu entwickeln, teilen wir den Datensatz in Trainings-, Validierungs- und Testdaten auf. Dieser Schritt ist entscheidend, damit das Modell nicht nur effektiv lernt, sondern auch auf unbekannte Daten verallgemeinert und seine Leistung präzise bewertet wird. Altman et al. (2024) schlagen eine Aufteilung von 60/20/20 vor: 
