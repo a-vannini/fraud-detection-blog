@@ -60,11 +60,11 @@ Dieses Verhalten zeigt sich oft in der Layering-Phase der Geldwäsche, wenn man 
 ## Scatter-Gather-Strukturen 
 Ein weiteres verbreitetes Muster ist die Scatter-Gather-Struktur, die oft in der Integrationsphase der Geldwäsche verwendet wird. Dieses Verhalten besteht aus zwei klar unterscheidbaren Teilen:  
 
-<img src="assets/scatter-gather.png" alt="gather-scatter" class="hover-zoom" style="float: right; margin-left: 20px; width: 100px;">
-<img src="assets/gather-scatter.png" alt="gather-scatter" class="hover-zoom" style="float: right; margin-left: 20px; width: 100px;">
+**Scatter:** Gelder werden von einem zentralen Konto auf mehrere Empfängerkonten verteilt.
+<img src="assets/scatter-gather.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 100px;">
 
-Scatter: Gelder werden von einem zentralen Konto auf mehrere Empfängerkonten verteilt.
-Gather: Die Gelder fliessen anschliessend von diesen Empfängerkonten zurück auf ein oder mehrere zentrale Konten.
+**Gather:** Die Gelder fliessen anschliessend von diesen Empfängerkonten zurück auf ein oder mehrere zentrale Konten.
+<img src="assets/gather-scatter.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 100px;">
 
 Beispiel: 
 - Konto A überweist Gelder an die Konten B, C und D (Scatter).  
@@ -78,19 +78,19 @@ Zunächst müssen wir verstehen, welche Herausforderungen Machine-Learning-Model
 
 Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herkömmliche Metriken wie die Genauigkeit (Accuracy) oft in die Irre führen. Ein Modell könnte etwa 99 % Genauigkeit erzielen, indem es stets die Mehrheitsklasse (legitime Transaktionen) vorhersagt, dabei jedoch keine betrügerischen Transaktionen erkennt. Hier greift der Minority-Class F1-Score ein. Der F1-Score balanciert Präzision und Recall aus. Diese beiden Masse sind entscheidend, um die Leistung eines Modells bei der Erkennung der Minderheitsklasse zu bewerten. 
 
-Präzision gibt an, wie viele der als "betrügerisch" eingestuften Transaktionen tatsächlich betrügerisch sind. 
+**Präzision** gibt an, wie viele der als "betrügerisch" eingestuften Transaktionen tatsächlich betrügerisch sind. 
 
 $$
 \text{Präzision} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}}
 $$
 
-Recall zeigt, wie viele der tatsächlich betrügerischen Transaktionen das Modell erkennt. 
+**Recall** zeigt, wie viele der tatsächlich betrügerischen Transaktionen das Modell erkennt. 
 
 $$
 \text{Recall} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Negatives (FN)}}
 $$
 
-Der F1-Score, das harmonische Mittel dieser beiden Werte, berechnet sich so: 
+Der **F1-Score**, das harmonische Mittel dieser beiden Werte, berechnet sich so: 
 
 $$
 \text{F1} = 2 \cdot \frac{\text{Präzision} \cdot \text{Recall}}{\text{Präzision} + \text{Recall}}
@@ -98,7 +98,45 @@ $$
 
 Ein hoher F1-Score für die Minderheitsklasse zeigt, dass das Modell sowohl präzise als auch sensibel seltene Klassen erkennt und so eine faire, aussagekräftige Bewertung bei unausgewogenen Daten ermöglicht. 
 
+<img src="assets/confusion_matrix1.png" alt="confusion_matrix1" class="hover-zoom" style="float: right; margin-left: 20px; width: 100px;">
+
 > Ein einfaches Beispiel: Stellen wir uns einen Datensatz mit 50 Transaktionen vor, von denen 2 % betrügerisch sind. Eine
 > Transaktion ist betrügerisch (True Positive, wenn korrekt erkannt). Das Modell markiert jedoch fälschlicherweise zwei 
-> weitere Transaktionen als betrügerisch (False Positives) und übersieht die betrügerische Transaktion (False Negative).  
+> weitere Transaktionen als betrügerisch (False Positives) und übersieht die betrügerische Transaktion (False Negative).
+
+Die Berechnungen lauten: 
+
+**Präzision:** Wie viele der als betrügerisch klassifizierten Transaktionen sind tatsächlich betrügerisch?  
+$$
+\text{Präzision} = \(\frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}} = \frac{0}{0 + 2} = 0{,}0 \, (0\%)\)
+$$
+
+**Recall:** Wie viele der tatsächlich betrügerischen Transaktionen hat das Modell erkannt?  
+$$
+\text{Recall} = \(\frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Negatives (FN)}} = \frac{0}{0 + 1} = 0{,}0 \, (0\%)\)
+$$
+
+**F1-Score:** Der F1-Score ist undefiniert, da sowohl Präzision als auch Recall 0 sind. Das zeigt, dass das Modell die betrügerische Transaktion nicht erkannt hat.  
+
+<img src="assets/confusion_matrix2.png" alt="confusion_matrix2" class="hover-zoom" style="float: right; margin-left: 20px; width: 100px;">
+
+Stellen wir uns vor, das Modell erkennt die betrügerische Transaktion korrekt erkennt und zwei weitere Transaktionen fälschlicherweise als betrügerisch.
+
+Dann lauten die Werte:  
+
+$$
+\text{Präzision} = \(\frac{1}{1 + 2} = 0{,}33 \, (33\%)\)  
+$$
+ 
+$$
+\text{Recall} = \(\frac{1}{1 + 0} = 1{,}0 \, (100\%)\)  
+$$
+ 
+$$
+\text{F1} = \(2 \cdot \frac{\text{Präzision} \cdot \text{Recall}}{\text{Präzision} + \text{Recall}} = 2 \cdot \frac{0{,}33 \cdot 1{,}0}{0{,}33 + 1{,}0} \approx 0{,}5 \, (50\%)\)  
+$$
+ 
+Der F1-Score zeigt eine moderate Balance zwischen Präzision und Recall. Das Modell erkennt die betrügerische Transaktion, jedoch mit einigen Fehlalarmen. Dieses Beispiel verdeutlicht, wie der F1-Score die Modellleistung bei stark unausgewogenen Daten misst. 
+
+Das folgende Kapitel beschreibt Methoden, die unsere Arbeit inspirierten.  
 
