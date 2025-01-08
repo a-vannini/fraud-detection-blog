@@ -248,7 +248,7 @@ Graph-basierte Modelle erkennen versteckte Muster in Transaktionsnetzwerken, ind
 
 ### Graphen
 Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges) bestehen und zur Darstellung von Beziehungen zwischen Objekten verwendet werden. Knoten repräsentieren dabei die Objekte selbst, während die Kanten die Verbindungen zwischen diesen Objekten beschreiben. In der Graphentheorie unterscheidet man zwischen verschiedenen Arten von Graphen: 
-<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="display: block; margin: 10px auto; width: 200px;">
 
 - Graphen ohne Mehrfachkanten:
     - Diese Graphen erlauben pro Knotenpaar maximal eine Kante. 
@@ -265,7 +265,7 @@ In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein g
 
 
 ### Data-Split
-<img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: left; margin-right: 20px; width: 300px;">
+<img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 Um die Daten optimal für Training und Evaluierung zu trennen, führten wir einen Community Split durch. Dieser Ansatz trennt die Splits vollständig und verhindert jegliche Interaktion zwischen ihnen, was Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten – effektiv vermeidet. Zunächst wandelten wir die tabellarischen Daten in einen Graphen um, wie im vorherigen Kapitel beschrieben. Dann identifizierten wir die größte Weakly Connected Component (WCC), den größten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. So bleibt der Graph konsistent und zusammenhängend. 
 
 
