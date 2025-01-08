@@ -100,7 +100,7 @@ Ein hoher F1-Score für die Minderheitsklasse zeigt, dass das Modell sowohl prä
 
 <img src="assets/confusion_matrix1.png" alt="confusion_matrix1" class="hover-zoom" style="float: right; margin-left: 20px; width: 100px;">
 
-> Ein einfaches Beispiel: Stellen wir uns einen Datensatz mit 50 Transaktionen vor, von denen 2 % betrügerisch sind. Eine
+> Ein Beispiel: Stellen wir uns einen Datensatz mit 50 Transaktionen vor, von denen 2 % betrügerisch sind. Eine
 > Transaktion ist betrügerisch (True Positive, wenn korrekt erkannt). Das Modell markiert jedoch fälschlicherweise zwei 
 > weitere Transaktionen als betrügerisch (False Positives) und übersieht die betrügerische Transaktion (False Negative).
 
@@ -140,3 +140,63 @@ Der F1-Score zeigt eine moderate Balance zwischen Präzision und Recall. Das Mod
 
 Das folgende Kapitel beschreibt Methoden, die unsere Arbeit inspirierten.  
 
+
+# Vorstellung Modellansätze aus Papers 
+Liu et al. (2020) konzentrierten sich auf die Verbesserung von Graph Neural Networks (GNNs), die vielversprechend für die Analyse relationaler Daten sind. Sie entwickelten das Framework **GraphConsis**, um Inkonsistenzen in Graphdaten zu beheben. Solche Inkonsistenzen entstehen, wenn Betrüger ihre Verbindungen tarnen, indem sie scheinbar normale Netzwerke aufbauen. GraphConsis filtert diese Störungen und identifiziert konsistente Nachbarschaftsstrukturen, was die Erkennungsleistung in realen Datensätzen signifikant verbessert.  
+ 
+Ein weiterer Ansatz ist der **Graph Feature Preprocessor (GFP)**, der speziell für die Echtzeit-Erkennung von Geldwäschemustern wie Simple Cycles oder Scatter-Gather entwickelt wurde. Dieses Tool extrahiert Merkmale aus Finanztransaktionsgrafen und erweitert traditionelle Machine-Learning-Modelle wie Gradient Boosted Trees. Die Kombination dieser Modelle mit Graph-Features steigerte die F1-Score für die Erkennung von Minderheitsklassen um bis zu 36 %, was die Bedeutung von Graph-basierten Features für die Betrugserkennung unterstreicht (Blanuša et al., 2024).  
+
+Egressy et al. leisteten einen innovativen Beitrag, indem sie gerichtete Multigraphen in den Fokus rückten. Sie passten GNNs für diese komplexen Strukturen an und erkannten durch Techniken wie **Reverse Message Passing** und **Port-Nummerierung** effizient Muster wie Zyklen und Scatter-Gather. Dieser Ansatz verbesserte die Erkennungsrate von Geldwäsche-Transaktionen um bis zu 30%. Parallel dazu setzte die Forschung zu Ensemble-Modellen neue Massstäbe.
+
+Vashistha et al. entwickelten das **Hyper Ensemble Machine Learning (HEML)**, das Modelle wie Neuronale Netze, Entscheidungsbäume und Isolation Forests kombiniert. HEML zeigte aussergewöhnliche Robustheit bei der Erkennung unbekannter Betrugsmuster und reduzierte die Rate falscher Alarme erheblich. Dieser Ansatz gleicht die Schwächen einzelner Modelle durch die Kombination verschiedener Algorithmen aus. 
+
+
+# Unsere Modelle 
+In unserem Projekt verfolgten wir zwei Ansätze, um Geldwäsche in einem unausgewogenen Datensatz aufzuspüren: nicht graph-basierte und graph-basierte Modelle. 
+<img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+
+
+## Nicht graph-basiert
+Nicht graph-basierte Modelle analysieren Transaktionen isoliert. Sie ignorieren die Beziehungen zwischen Sender- und Empfängerkonten und konzentrieren sich stattdessen auf Transaktionsmerkmale wie Betrag, Währung oder Zahlungsformat. Diese Methode eignet sich, wenn die Datenstruktur keine klaren Verbindungen zeigt oder eine schnelle, skalierbare Analyse nötig ist. Sie versagt jedoch bei der Erkennung komplexer Netzwerke oder Abhängigkeiten. In unserem Fall erwarteten wir deshalb eine schlechte Modellleistung. 
+
+Für den nicht graph-basierten Ansatz nutzten wir Gradient Boosted Trees (GBT). Diese Methode kombiniert viele einfache Entscheidungsbäume, um Vorhersagen zu verbessern. Entscheidungsbäume teilen Daten durch Ja/Nein-Fragen in Kategorien. 
+
+<img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+
+> Ein Beispiel: Wir wollen prüfen, ob eine Transaktion betrügerisch ist. Die Daten: 
+>    Betrag: 15.000 USD 
+>    Währung: Bitcoin 
+>    Zahlungsformat: Kreditkarte 
+>    Sender: Konto mit auffälligem Transaktionsmuster 
+
+> Ein einzelner Entscheidungsbaum könnte dabei so aussehen: 
+<img src="assets/entscheidungsbaum.png" alt="entscheidungsbaum" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
+
+Dieser Baum liefert eine erste Einschätzung. GBT erstellt viele solcher Bäume und verbessert sie schrittweise, indem es sich auf die Fehler der vorherigen Bäume konzentriert. Erkennt der erste Baum einige betrügerische Transaktionen nicht, trainiert der nächste Baum gezielt darauf.
+
+
+### Data-Split 
+<img src="assets/datasplit_time.png" alt="datasplit_time" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+
+Um maschinelle Lernmodelle zu entwickeln, teilen wir den Datensatz in Trainings-, Validierungs- und Testdaten auf. Dieser Schritt ist entscheidend, damit das Modell nicht nur effektiv lernt, sondern auch auf unbekannte Daten verallgemeinert und seine Leistung präzise bewertet wird. Altman et al. (2024) schlagen eine Aufteilung von 60/20/20 vor: 
+- 60% Trainingsdaten: Das Modell erkennt Muster in diesen Daten.  
+- 20% Validierungsdaten: Diese optimieren das Modell, etwa durch Justieren von Hyperparametern. 
+- 20% Testdaten: Sie prüfen, wie gut das Modell in einem unabhängigen Szenario tatsächlich abschneidet. 
+
+In unserem Projekt folgten wir dieser Empfehlung. Der IBM-AML-Datensatz umfasst Transaktionen über 17 Tage. Wir wendeten den Split jedoch nur auf die ersten 10 Tage an. Diese Entscheidung stützt sich auf Erkenntnisse aus der [Kaggle Diskussion)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml/discussion/427517). Dort wird betont, dass die letzten 7 Tage des Datensatzes gezielt für Szenarien mit mehr Geldwäsche-Transaktionen synthetisch erstellt wurden. Diese künstliche Verzerrung könnte die Modellleistung unrealistisch beeinflussen, da es auf überrepräsentierte Daten abgestimmt würde, die in der Realität selten sind. Neben der zeitlichen Aufteilung untersuchten wir auch die Verteilung der Geldwäsche-Muster im Datensatz. Unser Ziel war, sicherzustellen, dass die Muster im Training, in der Validierung und im Test ähnlich verteilt sind, damit das Modell keine Muster "überlernt". 
+
+
+### Die Modelle detailliert 
+
+Wir implementierten zwei Varianten von Gradient Boost Modellen:  
+- XGBoost (Extreme Gradient Boosting) 
+- LightGBM (Light Gradient Boosting Machine) 
+
+XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
+
+> Wieder unser Beispiel: Betrachten wir wieder die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
+> Klassengewichtung könnte das Modell alle Transaktionen als "legitim" einstufen und dennoch 98 % Genauigkeit erreichen. Das
+> wäre nutzlos, da keine betrügerische Transaktion erkannt würde. Um dies zu verhindern, geben wir der Klasse "betrügerisch"
+> eine höhere Gewichtung, etwa den Faktor 49, basierend auf dem Verhältnis von legitimen zu betrügerischen Transaktionen. So
+> wird der Fehler, eine betrügerische Transaktion zu übersehen, 49-mal stärker bestraft als der Fehler, eine legitime 
+> Transaktion fälschlich als betrügerisch zu klassifizieren.   
