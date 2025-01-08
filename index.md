@@ -62,8 +62,7 @@ Ein weiteres verbreitetes Muster ist die Scatter-Gather-Struktur, die oft in der
 
 Scatter: Gelder werden von einem zentralen Konto auf mehrere Empfängerkonten verteilt.
 
-<img src="assets/scatter-gather.png" alt="scatter-gather" class="hover-zoom" style="float: left; margin-right: 20px; width: 100px;">
-
+<img src="assets/scatter-gather.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 100px;">
 
 Gather: Die Gelder fliessen anschliessend von diesen Empfängerkonten zurück auf ein oder mehrere zentrale Konten.
 
