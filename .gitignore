@@ -1,0 +1,6 @@
+# macOS-specific files
+.DS_Store
+
+# Jekyll (GitHub Pages default generator)
+.jekyll-cache/
+.jekyll-metadata
