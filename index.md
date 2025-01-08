@@ -78,7 +78,13 @@ Zunächst müssen wir verstehen, welche Herausforderungen Machine-Learning-Model
 
 Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herkömmliche Metriken wie die Genauigkeit (Accuracy) oft in die Irre führen. Ein Modell könnte etwa 99 % Genauigkeit erzielen, indem es stets die Mehrheitsklasse (legitime Transaktionen) vorhersagt, dabei jedoch keine betrügerischen Transaktionen erkennt. Hier greift der Minority-Class F1-Score ein. Der F1-Score balanciert Präzision und Recall aus. Diese beiden Masse sind entscheidend, um die Leistung eines Modells bei der Erkennung der Minderheitsklasse zu bewerten. 
 
-**Präzision** gibt an, wie viele der als "betrügerisch" eingestuften Transaktionen tatsächlich betrügerisch sind. 
+**Präzision** gibt an, wie viele der als betrügerisch eingestuften Transaktionen tatsächlich betrügerisch sind. 
+
+\[
+\begin{align*}
+\text{Präzision} &= \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}}
+\end{align*}
+\]
 
 <div style="text-align: left;">
 $$
@@ -110,12 +116,12 @@ Die Berechnungen lauten:
 
 **Präzision:** Wie viele der als betrügerisch klassifizierten Transaktionen sind tatsächlich betrügerisch?  
 $$
-\text{Präzision} = \(\frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}} = \frac{0}{0 + 2} = 0{,}0 \, (0\%)\)
+\text{Präzision} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}} = \frac{0}{0 + 2} = 0{,}0 \, (0\%)
 $$
 
 **Recall:** Wie viele der tatsächlich betrügerischen Transaktionen hat das Modell erkannt?  
 $$
-\text{Recall} = \(\frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Negatives (FN)}} = \frac{0}{0 + 1} = 0{,}0 \, (0\%)\)
+\text{Recall} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Negatives (FN)}} = \frac{0}{0 + 1} = 0{,}0 \, (0\%)
 $$
 
 **F1-Score:** Der F1-Score ist undefiniert, da sowohl Präzision als auch Recall 0 sind. Das zeigt, dass das Modell die betrügerische Transaktion nicht erkannt hat.  
@@ -155,7 +161,7 @@ Vashistha et al. entwickelten das **Hyper Ensemble Machine Learning (HEML)**, da
 
 # Unsere Modelle 
 In unserem Projekt verfolgten wir zwei Ansätze, um Geldwäsche in einem unausgewogenen Datensatz aufzuspüren: nicht graph-basierte und graph-basierte Modelle. 
-<img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+<img src="assets/scatter-gather.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px 0; width: 400px;">
 
 
 ## Nicht graph-basiert
@@ -163,15 +169,13 @@ Nicht graph-basierte Modelle analysieren Transaktionen isoliert. Sie ignorieren 
 
 Für den nicht graph-basierten Ansatz nutzten wir Gradient Boosted Trees (GBT). Diese Methode kombiniert viele einfache Entscheidungsbäume, um Vorhersagen zu verbessern. Entscheidungsbäume teilen Daten durch Ja/Nein-Fragen in Kategorien. 
 
-<img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
-
 > Ein Beispiel: Wir wollen prüfen, ob eine Transaktion betrügerisch ist. Die Daten: 
->    Betrag: 15.000 USD 
->    Währung: Bitcoin 
->    Zahlungsformat: Kreditkarte 
->    Sender: Konto mit auffälligem Transaktionsmuster 
+> - Betrag: 15.000 USD 
+> - Währung: Bitcoin 
+> - Zahlungsformat: Kreditkarte 
+> - Sender: Konto mit auffälligem Transaktionsmuster 
 
-> Ein einzelner Entscheidungsbaum könnte dabei so aussehen: 
+Ein einzelner Entscheidungsbaum könnte dabei so aussehen: 
 <img src="assets/entscheidungsbaum.png" alt="entscheidungsbaum" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
 Dieser Baum liefert eine erste Einschätzung. GBT erstellt viele solcher Bäume und verbessert sie schrittweise, indem es sich auf die Fehler der vorherigen Bäume konzentriert. Erkennt der erste Baum einige betrügerische Transaktionen nicht, trainiert der nächste Baum gezielt darauf.
@@ -189,7 +193,6 @@ In unserem Projekt folgten wir dieser Empfehlung. Der IBM-AML-Datensatz umfasst 
 
 
 ### Die Modelle detailliert 
-
 Wir implementierten zwei Varianten von Gradient Boost Modellen:  
 - XGBoost (Extreme Gradient Boosting) 
 - LightGBM (Light Gradient Boosting Machine) 
