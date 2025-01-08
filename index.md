@@ -158,6 +158,7 @@ Vashistha et al. entwickelten das **Hyper Ensemble Machine Learning (HEML)**, da
 
 # Unsere Modelle 
 In unserem Projekt verfolgten wir zwei Ansätze, um Geldwäsche in einem unausgewogenen Datensatz aufzuspüren: nicht graph-basierte und graph-basierte Modelle. 
+
 <img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px 0; width: 300px;">
 
 
@@ -191,11 +192,13 @@ In unserem Projekt folgten wir dieser Empfehlung. Der IBM-AML-Datensatz umfasst 
 
 
 ### Die Modelle detailliert
+
 Wir implementierten zwei Varianten von Gradient Boost Modellen:  
 - XGBoost (Extreme Gradient Boosting) 
 - LightGBM (Light Gradient Boosting Machine) 
 
-**XGBoost** erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
+#### XGBoost
+XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
 
 > Wieder unser Beispiel: Betrachten wir wieder die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
 > Klassengewichtung könnte das Modell alle Transaktionen als "legitim" einstufen und dennoch 98 % Genauigkeit erreichen. Das
@@ -204,8 +207,8 @@ Wir implementierten zwei Varianten von Gradient Boost Modellen:
 > wird der Fehler, eine betrügerische Transaktion zu übersehen, 49-mal stärker bestraft als der Fehler, eine legitime 
 > Transaktion fälschlich als betrügerisch zu klassifizieren.
 
-<img src="assets/logloss.png" alt="logloss" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Log-Loss. Diese Funktion misst, wie gut die vorhergesagte Wahrscheinlichkeit mit der tatsächlichen Klasse übereinstimmt. Bei einer betrügerischen Transaktion soll das Modell eine Wahrscheinlichkeit nahe 1 liefern, bei legitimen nahe 0. Weicht die Vorhersage stark von der tatsächlichen Klasse ab, bestraft die Funktion das Modell stärker. So trifft das Modell nicht nur Entscheidungen, sondern liefert auch zuverlässige Wahrscheinlichkeiten. 
+<img src="assets/logloss.png" alt="logloss" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
 - Das Modell schätzte die erste Transaktion (betrügerisch) mit einer hohen Wahrscheinlichkeit von 0,80 ein. Diese liegt nahe an der tatsächlichen Klasse, daher bleibt der Log-Loss-Beitrag gering (0,223).  
 - Bei der zweiten Transaktion (legitim) sagte das Modell korrekt eine niedrige Wahrscheinlichkeit von 0,20 voraus, was ebenfalls zu einem kleinen Log-Loss-Beitrag führt.  
@@ -213,3 +216,12 @@ XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Lo
 
 Der Gesamt-Log-Loss ergibt sich aus dem Durchschnitt der einzelnen Beiträge. 
 
+#### LightGBM
+
+LightGBM wurde entwickelt von Microsoft. Seine Effektivität beruht auf der innovativen Methode des Leaf-Wise Tree Growth beim Aufbau von Entscheidungsbäumen. Herkömmliche Algorithmen erweitern Bäume symmetrisch und levelweise, indem sie alle Knoten gleichzeitig ausbauen.
+<img src="assets/entscheidungsbaum_deluxe.png" alt="entscheidungsbaum_deluxe" class="hover-zoom" style="display: block; margin: 10px 0; width: 200px;">
+
+LightGBM hingegen wächst blattweise und fügt Verzweigungen dort hinzu, wo sie den grössten Informationsgewinn bieten. So entstehen oft asymmetrische Bäume.  
+<img src="assets/entscheidungsbaum_lightgbm.png" alt="entscheidungsbaum_lightgbm" class="hover-zoom" style="display: block; margin: 10px 0; width: 200px;">
+
+LightGBM passt zudem automatisch die Gewichtung der Klassen an, indem es den Anteil der Minderheitsklasse berücksichtigt. Ist diese Option aktiviert, erhöht der Algorithmus das Gewicht der seltenen Klasse, etwa bei betrügerischen Transaktionen, sodass sie im Training mehr Einfluss auf die Verlustfunktion hat. Beim Beispiel mit 50 Transaktionen, von denen 49 legitim und 1 betrügerisch sind, weist LightGBM der betrügerischen Klasse automatisch ein höheres Gewicht zu, etwa im Verhältnis 49:1. Zusätzlich erlaubt LightGBM, die Gewichtung der positiven Klasse manuell zu definieren. Unter anderem dank des Leaf-Wise Tree Growth arbeitet der Algorithmus speicher- und zeitoptimierter als XGBoost. 
