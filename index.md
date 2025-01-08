@@ -195,7 +195,8 @@ Wir implementierten zwei Varianten von Gradient Boost Modellen:
 - XGBoost (Extreme Gradient Boosting) 
 - LightGBM (Light Gradient Boosting Machine) 
 
-#### XGBoost
+#### XGBoost
+
 XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
 
 > Wieder unser Beispiel: Betrachten wir wieder die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
@@ -214,6 +215,7 @@ XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Lo
 Der Gesamt-Log-Loss ergibt sich aus dem Durchschnitt der einzelnen Beiträge. 
 
 #### LightGBM
+
 LightGBM wurde entwickelt von Microsoft. Seine Effektivität beruht auf der innovativen Methode des Leaf-Wise Tree Growth beim Aufbau von Entscheidungsbäumen. Herkömmliche Algorithmen erweitern Bäume symmetrisch und levelweise, indem sie alle Knoten gleichzeitig ausbauen.
 <img src="assets/entscheidungsbaum_deluxe.png" alt="entscheidungsbaum_deluxe-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
@@ -248,8 +250,7 @@ Graph-basierte Modelle erkennen versteckte Muster in Transaktionsnetzwerken, ind
 ### Graphen
 
 Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges) bestehen und zur Darstellung von Beziehungen zwischen Objekten verwendet werden. Knoten repräsentieren dabei die Objekte selbst, während die Kanten die Verbindungen zwischen diesen Objekten beschreiben. In der Graphentheorie unterscheidet man zwischen verschiedenen Arten von Graphen: 
-
-<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
+<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
 - Graphen ohne Mehrfachkanten:
     - Diese Graphen erlauben pro Knotenpaar maximal eine Kante. 
@@ -260,6 +261,9 @@ Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges)
 
 > Beispiel: Ein ungerichteter Graph zeigt eine soziale Verbindung, etwa Freundschaften, während ein gerichteter Graph Transaktionen oder Flüsse zwischen Konten darstellt.
 
-In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein gerichtetes Multigraph-Modell gewählt. In diesem Modell repräsentieren die Knoten Bankkonten, während die Kanten Transaktionen zwischen diesen Konten darstellen. Da zwischen zwei Konten mehrere Transaktionen stattfinden können, eignet sich ein Multigraph hervorragend, um diese Dynamik zu modellieren. 
 <img src="assets/graph.png" alt="graph" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
-Die Kanten unseres Graphen sind dabei nicht nur einfache Verbindungen, sondern tragen zusätzliche Informationen in Form von Attributen. Dazu gehören der Betrag der Transaktion in Original- und USD-Währung, die verwendete Währung, das Zahlungsformat und ein Indikator, ob die Transaktion verdächtig ist oder nicht. 
+In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein gerichtetes Multigraph-Modell gewählt. In diesem Modell repräsentieren die Knoten Bankkonten, während die Kanten Transaktionen zwischen diesen Konten darstellen. Da zwischen zwei Konten mehrere Transaktionen stattfinden können, eignet sich ein Multigraph hervorragend, um diese Dynamik zu modellieren. Die Kanten unseres Graphen sind dabei nicht nur einfache Verbindungen, sondern tragen zusätzliche Informationen in Form von Attributen. Dazu gehören der Betrag der Transaktion in Original- und USD-Währung, die verwendete Währung, das Zahlungsformat und ein Indikator, ob die Transaktion verdächtig ist oder nicht. 
+
+
+### Data-Split
+
