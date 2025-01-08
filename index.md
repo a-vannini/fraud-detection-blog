@@ -161,7 +161,7 @@ Vashistha et al. entwickelten das **Hyper Ensemble Machine Learning (HEML)**, da
 
 # Unsere Modelle 
 In unserem Projekt verfolgten wir zwei Ansätze, um Geldwäsche in einem unausgewogenen Datensatz aufzuspüren: nicht graph-basierte und graph-basierte Modelle. 
-<img src="assets/scatter-gather.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px 0; width: 400px;">
+<img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px 0; width: 400px;">
 
 
 ## Nicht graph-basiert
@@ -192,7 +192,7 @@ Um maschinelle Lernmodelle zu entwickeln, teilen wir den Datensatz in Trainings-
 In unserem Projekt folgten wir dieser Empfehlung. Der IBM-AML-Datensatz umfasst Transaktionen über 17 Tage. Wir wendeten den Split jedoch nur auf die ersten 10 Tage an. Diese Entscheidung stützt sich auf Erkenntnisse aus der [Kaggle Diskussion)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml/discussion/427517). Dort wird betont, dass die letzten 7 Tage des Datensatzes gezielt für Szenarien mit mehr Geldwäsche-Transaktionen synthetisch erstellt wurden. Diese künstliche Verzerrung könnte die Modellleistung unrealistisch beeinflussen, da es auf überrepräsentierte Daten abgestimmt würde, die in der Realität selten sind. Neben der zeitlichen Aufteilung untersuchten wir auch die Verteilung der Geldwäsche-Muster im Datensatz. Unser Ziel war, sicherzustellen, dass die Muster im Training, in der Validierung und im Test ähnlich verteilt sind, damit das Modell keine Muster "überlernt". 
 
 
-### Die Modelle detailliert 
+### Die Modelle detailliert
 Wir implementierten zwei Varianten von Gradient Boost Modellen:  
 - XGBoost (Extreme Gradient Boosting) 
 - LightGBM (Light Gradient Boosting Machine) 
