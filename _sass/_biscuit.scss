@@ -55,14 +55,14 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: 1.5rem;
-  margin-top: 1.5rem;
+  margin-top: 2.5rem;
   margin-bottom: 1rem;
 }
 
 @media (min-width: 30rem) {
   h1 {
     font-size: 2.0rem;
-    margin-top: 1.5rem;
+    margin-top: 2.5rem;
     margin-bottom: 1rem;
   }
 }
@@ -72,9 +72,8 @@ h1 a {
 }
 
 h2 {
-  margin-top: 2rem;
   font-size: 1.3rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 
@@ -82,7 +81,7 @@ h2 {
   h2 {
     margin-top: 2.5rem;
     font-size: 1.5rem;
-    margin-top: 1rem;
+    margin-top: 2rem;
     margin-bottom: 0.75rem;
   }
 }
@@ -90,14 +89,14 @@ h2 {
 h3 {
   font-size: 1.1rem;
   font-weight: bold;
-  margin-top: 0.75rem;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
 h4, h5, h6 {
   font-size: 1rem;
   font-weight: bold;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   margin-bottom: 0;
 }
 
