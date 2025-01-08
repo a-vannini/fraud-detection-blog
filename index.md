@@ -47,13 +47,13 @@ Ein weiteres typisches Muster ist die elektronische Überweisung per ACH. Diese 
 Im Kampf gegen Geldwäsche ist es auch entscheidend, typische Muster in Transaktionen zu erkennen, die illegale Aktivitäten verraten. Solche Muster beschreiben spezifische Verhaltensweisen, die darauf abzielen, die Herkunft illegaler Gelder zu verschleiern und sie als legitim erscheinen zu lassen. Im Datensatz sind diese Muster häufig gekennzeichnet, sodass die meisten Transaktion einem bestimmten Muster zugeordnet werden können. Diese Kennzeichnung basiert auf bekannten Geldwäschemechanismen und umfasst Cycles, Scatter-Gather-Strukturen, Chains und andere komplexe Netzwerke. Nachfolgend stellen wir zwei der prominentesten Geldwäsche-Muster aus dem Datensatz vor: Simple Cycles und Scatter-Gather-Strukturen.  
 
 ## Simple Cycles 
-Das Simple Cycles-Muster beschreibt eine geschlossene Kette von Transaktionen, bei der Gelder innerhalb eines festen Kontenkreises zirkulieren. Diese Strategie zielt darauf ab, die ursprüngliche Herkunft der Gelder durch mehrfache Überweisungen zu verschleiern. 
 <img src="assets/cycle.png" alt="cycle" class="hover-zoom" style="float: left; margin-right: 20px; width: 100px;">
+Das Simple Cycles-Muster beschreibt eine geschlossene Kette von Transaktionen, bei der Gelder innerhalb eines festen Kontenkreises zirkulieren. Diese Strategie zielt darauf ab, die ursprüngliche Herkunft der Gelder durch mehrfache Überweisungen zu verschleiern. 
 
-Beispiel: 
-- Konto A überweist Geld an Konto B.  
-- Konto B überweist einen Teil oder den gesamten Betrag an Konto C.  
-- Konto C überweist schliesslich das Geld zurück an Konto A.  
+> Beispiel: 
+> - Konto A überweist Geld an Konto B.  
+> - Konto B überweist einen Teil oder den gesamten Betrag an Konto C.  
+> - Konto C überweist schliesslich das Geld zurück an Konto A.  
 
 Dieses Verhalten zeigt sich oft in der Layering-Phase der Geldwäsche, wenn man Gelder durch verschiedene Konten schleust, um die Spur zu verwischen. Simple Cycles wirken zunächst legitim, doch ihre wiederholte Struktur und der fehlende wirtschaftliche Zweck entlarven sie. In den zuvor vorgestellten Modellen gelten sie als besonders schwer erkennbar, vor allem bei mehr als sechs beteiligten Konten. 
 
@@ -61,14 +61,14 @@ Dieses Verhalten zeigt sich oft in der Layering-Phase der Geldwäsche, wenn man 
 Ein weiteres verbreitetes Muster ist die Scatter-Gather-Struktur, die oft in der Integrationsphase der Geldwäsche verwendet wird. Dieses Verhalten besteht aus zwei klar unterscheidbaren Teilen:  
 
 **Scatter:** Gelder werden von einem zentralen Konto auf mehrere Empfängerkonten verteilt.
-<img src="assets/scatter-gather.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 100px;">
+<img src="assets/scatter-gather.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px 0; width: 100px;">
 
 **Gather:** Die Gelder fliessen anschliessend von diesen Empfängerkonten zurück auf ein oder mehrere zentrale Konten.
-<img src="assets/gather-scatter.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 100px;">
+<img src="assets/gather-scatter.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px 0; width: 100px;">
 
-Beispiel: 
-- Konto A überweist Gelder an die Konten B, C und D (Scatter).  
-- Konten B, C und D leiten diese Gelder zurück an Konto E (Gather).  
+> Beispiel: 
+> - Konto A überweist Gelder an die Konten B, C und D (Scatter).  
+> - Konten B, C und D leiten diese Gelder zurück an Konto E (Gather).  
 
 Diese Struktur verschleiert die Geldspur durch Streuung und spätere Zusammenführung. Scatter-Gather-Muster sind oft hochgradig organisiert und schwer zu erkennen, da ähnliche Verhaltensweisen auch in legitimen Transaktionsnetzen vorkommen können.  
 
@@ -80,9 +80,11 @@ Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herköm
 
 **Präzision** gibt an, wie viele der als "betrügerisch" eingestuften Transaktionen tatsächlich betrügerisch sind. 
 
+<div style="text-align: left;">
 $$
 \text{Präzision} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}}
 $$
+</div>
 
 **Recall** zeigt, wie viele der tatsächlich betrügerischen Transaktionen das Modell erkennt. 
 
@@ -192,11 +194,21 @@ Wir implementierten zwei Varianten von Gradient Boost Modellen:
 - XGBoost (Extreme Gradient Boosting) 
 - LightGBM (Light Gradient Boosting Machine) 
 
-XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
+**XGBoost** erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
 
 > Wieder unser Beispiel: Betrachten wir wieder die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
 > Klassengewichtung könnte das Modell alle Transaktionen als "legitim" einstufen und dennoch 98 % Genauigkeit erreichen. Das
 > wäre nutzlos, da keine betrügerische Transaktion erkannt würde. Um dies zu verhindern, geben wir der Klasse "betrügerisch"
 > eine höhere Gewichtung, etwa den Faktor 49, basierend auf dem Verhältnis von legitimen zu betrügerischen Transaktionen. So
 > wird der Fehler, eine betrügerische Transaktion zu übersehen, 49-mal stärker bestraft als der Fehler, eine legitime 
-> Transaktion fälschlich als betrügerisch zu klassifizieren.   
+> Transaktion fälschlich als betrügerisch zu klassifizieren.
+
+<img src="assets/logloss.png" alt="logloss" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Log-Loss. Diese Funktion misst, wie gut die vorhergesagte Wahrscheinlichkeit mit der tatsächlichen Klasse übereinstimmt. Bei einer betrügerischen Transaktion soll das Modell eine Wahrscheinlichkeit nahe 1 liefern, bei legitimen nahe 0. Weicht die Vorhersage stark von der tatsächlichen Klasse ab, bestraft die Funktion das Modell stärker. So trifft das Modell nicht nur Entscheidungen, sondern liefert auch zuverlässige Wahrscheinlichkeiten. 
+
+- Das Modell schätzte die erste Transaktion (betrügerisch) mit einer hohen Wahrscheinlichkeit von 0,80 ein. Diese liegt nahe an der tatsächlichen Klasse, daher bleibt der Log-Loss-Beitrag gering (0,223).  
+- Bei der zweiten Transaktion (legitim) sagte das Modell korrekt eine niedrige Wahrscheinlichkeit von 0,20 voraus, was ebenfalls zu einem kleinen Log-Loss-Beitrag führt.  
+- Bei der dritten Transaktion (legitim) prognostizierte das Modell jedoch fälschlicherweise eine hohe Wahrscheinlichkeit von 0,90 für "betrügerisch". Dieser Fehler wird stark bestraft (2,302).  
+
+Der Gesamt-Log-Loss ergibt sich aus dem Durchschnitt der einzelnen Beiträge. 
+
