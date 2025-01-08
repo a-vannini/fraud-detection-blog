@@ -80,12 +80,6 @@ Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herköm
 
 **Präzision** gibt an, wie viele der als betrügerisch eingestuften Transaktionen tatsächlich betrügerisch sind. 
 
-\[
-\begin{align*}
-\text{Präzision} &= \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}}
-\end{align*}
-\]
-
 <div style="text-align: left;">
 $$
 \text{Präzision} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}}
@@ -106,7 +100,7 @@ $$
 
 Ein hoher F1-Score für die Minderheitsklasse zeigt, dass das Modell sowohl präzise als auch sensibel seltene Klassen erkennt und so eine faire, aussagekräftige Bewertung bei unausgewogenen Daten ermöglicht. 
 
-<img src="assets/confusion_matrix1.png" alt="confusion_matrix1" class="hover-zoom" style="float: right; margin-left: 20px; width: 100px;">
+<img src="assets/confusion_matrix1.png" alt="confusion_matrix1" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
 > Ein Beispiel: Stellen wir uns einen Datensatz mit 50 Transaktionen vor, von denen 2 % betrügerisch sind. Eine
 > Transaktion ist betrügerisch (True Positive, wenn korrekt erkannt). Das Modell markiert jedoch fälschlicherweise zwei 
@@ -114,34 +108,37 @@ Ein hoher F1-Score für die Minderheitsklasse zeigt, dass das Modell sowohl prä
 
 Die Berechnungen lauten: 
 
-**Präzision:** Wie viele der als betrügerisch klassifizierten Transaktionen sind tatsächlich betrügerisch?  
+**Präzision:** Wie viele der als betrügerisch klassifizierten Transaktionen sind tatsächlich betrügerisch?
+
 $$
 \text{Präzision} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Positives (FP)}} = \frac{0}{0 + 2} = 0{,}0 \, (0\%)
 $$
 
-**Recall:** Wie viele der tatsächlich betrügerischen Transaktionen hat das Modell erkannt?  
+**Recall:** Wie viele der tatsächlich betrügerischen Transaktionen hat das Modell erkannt?
+
 $$
 \text{Recall} = \frac{\text{True Positives (TP)}}{\text{True Positives (TP)} + \text{False Negatives (FN)}} = \frac{0}{0 + 1} = 0{,}0 \, (0\%)
 $$
 
 **F1-Score:** Der F1-Score ist undefiniert, da sowohl Präzision als auch Recall 0 sind. Das zeigt, dass das Modell die betrügerische Transaktion nicht erkannt hat.  
 
-<img src="assets/confusion_matrix2.png" alt="confusion_matrix2" class="hover-zoom" style="float: right; margin-left: 20px; width: 100px;">
+<img src="assets/confusion_matrix2.png" alt="confusion_matrix2" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
-Stellen wir uns vor, das Modell erkennt die betrügerische Transaktion korrekt erkennt und zwei weitere Transaktionen fälschlicherweise als betrügerisch.
+> Stellen wir uns vor, das Modell erkennt die betrügerische Transaktion korrekt erkennt und zwei weitere Transaktionen
+> fälschlicherweise als betrügerisch.
 
 Dann lauten die Werte:  
 
 $$
-\text{Präzision} = \(\frac{1}{1 + 2} = 0{,}33 \, (33\%)\)  
+\text{Präzision} = \frac{1}{1 + 2} = 0{,}33 \, (33\%)
 $$
- 
+
 $$
-\text{Recall} = \(\frac{1}{1 + 0} = 1{,}0 \, (100\%)\)  
+\text{Recall} = \frac{1}{1 + 0} = 1{,}0 \, (100\%)
 $$
- 
+
 $$
-\text{F1} = \(2 \cdot \frac{\text{Präzision} \cdot \text{Recall}}{\text{Präzision} + \text{Recall}} = 2 \cdot \frac{0{,}33 \cdot 1{,}0}{0{,}33 + 1{,}0} \approx 0{,}5 \, (50\%)\)  
+\text{F1} = 2 \cdot \frac{\text{Präzision} \cdot \text{Recall}}{\text{Präzision} + \text{Recall}} = 2 \cdot \frac{0{,}33 \cdot 1{,}0}{0{,}33 + 1{,}0} \approx 0{,}5 \, (50\%)
 $$
  
 Der F1-Score zeigt eine moderate Balance zwischen Präzision und Recall. Das Modell erkennt die betrügerische Transaktion, jedoch mit einigen Fehlalarmen. Dieses Beispiel verdeutlicht, wie der F1-Score die Modellleistung bei stark unausgewogenen Daten misst. 
