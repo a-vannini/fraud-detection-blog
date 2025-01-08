@@ -266,4 +266,13 @@ In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein g
 
 
 ### Data-Split
+<img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+Um die Daten optimal für Training und Evaluierung zu trennen, führten wir einen Community Split durch. Dieser Ansatz trennt die Splits vollständig und verhindert jegliche Interaktion zwischen ihnen, was Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten – effektiv vermeidet. Zunächst wandelten wir die tabellarischen Daten in einen Graphen um, wie im vorherigen Kapitel beschrieben. Dann identifizierten wir die größte Weakly Connected Component (WCC), den größten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. So bleibt der Graph konsistent und zusammenhängend. 
 
+
+Im nächsten Schritt teilten wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in großen Netzwerken, indem er iterativ die Modularity maximiert – ein Maß für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
+<img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+
+Um die beste Community-Einteilung zu erreichen, evaluierten wir in einer Schleife mehrere Varianten. Unser Ziel dabei ist es, die Anzahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) zu minimieren und gleichzeitig sicherzustellen, dass die Knotenverteilung in den Splits dem Verhältnis von 60% Training, 20% Validierung und 20% Test entspricht. Dieses Vorgehen ost entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. 
+
+Abschließend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwischen Knoten desselben Splits existieren. So bleibt die Trennung der Daten gewährleistet und die Integrität der Community-Struktur erhalten.
