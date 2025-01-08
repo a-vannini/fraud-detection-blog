@@ -198,6 +198,7 @@ Wir implementierten zwei Varianten von Gradient Boost Modellen:
 - LightGBM (Light Gradient Boosting Machine) 
 
 #### XGBoost
+
 XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
 
 > Wieder unser Beispiel: Betrachten wir wieder die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
@@ -207,8 +208,8 @@ XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-
 > wird der Fehler, eine betrügerische Transaktion zu übersehen, 49-mal stärker bestraft als der Fehler, eine legitime 
 > Transaktion fälschlich als betrügerisch zu klassifizieren.
 
-XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Log-Loss. Diese Funktion misst, wie gut die vorhergesagte Wahrscheinlichkeit mit der tatsächlichen Klasse übereinstimmt. Bei einer betrügerischen Transaktion soll das Modell eine Wahrscheinlichkeit nahe 1 liefern, bei legitimen nahe 0. Weicht die Vorhersage stark von der tatsächlichen Klasse ab, bestraft die Funktion das Modell stärker. So trifft das Modell nicht nur Entscheidungen, sondern liefert auch zuverlässige Wahrscheinlichkeiten. 
 <img src="assets/logloss.png" alt="logloss" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Log-Loss. Diese Funktion misst, wie gut die vorhergesagte Wahrscheinlichkeit mit der tatsächlichen Klasse übereinstimmt. Bei einer betrügerischen Transaktion soll das Modell eine Wahrscheinlichkeit nahe 1 liefern, bei legitimen nahe 0. Weicht die Vorhersage stark von der tatsächlichen Klasse ab, bestraft die Funktion das Modell stärker. So trifft das Modell nicht nur Entscheidungen, sondern liefert auch zuverlässige Wahrscheinlichkeiten. 
 
 - Das Modell schätzte die erste Transaktion (betrügerisch) mit einer hohen Wahrscheinlichkeit von 0,80 ein. Diese liegt nahe an der tatsächlichen Klasse, daher bleibt der Log-Loss-Beitrag gering (0,223).  
 - Bei der zweiten Transaktion (legitim) sagte das Modell korrekt eine niedrige Wahrscheinlichkeit von 0,20 voraus, was ebenfalls zu einem kleinen Log-Loss-Beitrag führt.  
@@ -219,9 +220,24 @@ Der Gesamt-Log-Loss ergibt sich aus dem Durchschnitt der einzelnen Beiträge.
 #### LightGBM
 
 LightGBM wurde entwickelt von Microsoft. Seine Effektivität beruht auf der innovativen Methode des Leaf-Wise Tree Growth beim Aufbau von Entscheidungsbäumen. Herkömmliche Algorithmen erweitern Bäume symmetrisch und levelweise, indem sie alle Knoten gleichzeitig ausbauen.
-<img src="assets/entscheidungsbaum_deluxe.png" alt="entscheidungsbaum_deluxe" class="hover-zoom" style="display: block; margin: 10px 0; width: 200px;">
+<img src="assets/entscheidungsbaum_deluxe-gather.png" alt="entscheidungsbaum_deluxe-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
-LightGBM hingegen wächst blattweise und fügt Verzweigungen dort hinzu, wo sie den grössten Informationsgewinn bieten. So entstehen oft asymmetrische Bäume.  
-<img src="assets/entscheidungsbaum_lightgbm.png" alt="entscheidungsbaum_lightgbm" class="hover-zoom" style="display: block; margin: 10px 0; width: 200px;">
+LightGBM hingegen wächst blattweise und fügt Verzweigungen dort hinzu, wo sie den grössten Informationsgewinn bieten. So entstehen oft asymmetrische Bäume.
+<img src="assets/entscheidungsbaum_lightgbm-gather.png" alt="entscheidungsbaum_lightgbm" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
 LightGBM passt zudem automatisch die Gewichtung der Klassen an, indem es den Anteil der Minderheitsklasse berücksichtigt. Ist diese Option aktiviert, erhöht der Algorithmus das Gewicht der seltenen Klasse, etwa bei betrügerischen Transaktionen, sodass sie im Training mehr Einfluss auf die Verlustfunktion hat. Beim Beispiel mit 50 Transaktionen, von denen 49 legitim und 1 betrügerisch sind, weist LightGBM der betrügerischen Klasse automatisch ein höheres Gewicht zu, etwa im Verhältnis 49:1. Zusätzlich erlaubt LightGBM, die Gewichtung der positiven Klasse manuell zu definieren. Unter anderem dank des Leaf-Wise Tree Growth arbeitet der Algorithmus speicher- und zeitoptimierter als XGBoost. 
+
+
+### Sampling
+
+Um das Problem unausgewogener Klassenverteilung zu lösen, haben wir verschiedene Sampling-Methoden eingesetzt: Undersampling, Oversampling, SMOTE und ADASYN.  
+
+Beim **Undersampling** reduzieren wir die Grösse der Mehrheitsklasse, indem wir zufällig eine Teilmenge auswählen. So gleichen wir den Datensatz aus. Im Beispiel mit 49 legitimen und 1 betrügerischen Transaktion würde das bedeuten, dass wir nach dem Undersampling je 1 legitime und 1 betrügerische Transaktion haben. Dabei entfernen wir viele Datenpunkte, was das Risiko birgt, wichtige Informationen der Mehrheitsklasse zu verlieren. 
+
+Beim **Oversampling** wird die Minderheitsklasse künstlich vergrössert, indem bestehende Datenpunkte dupliziert werden. Dadurch bleibt die Grösse der Mehrheitsklasse erhalten, während die Minderheitsklasse vergrössert wird. In unserem Beispiel würde die eine Transaktion dupliziert, bis es 49 betrügerische Transaktionen gäbe. Da dieselben Datenpunkte dadurch mehrmals verwendet werden, besteht die Gefahrt von Overfitting. 
+
+**SMOTE** ist eine fortschrittliche Oversampling-Methode, die synthetische Datenpunkte für die Minderheitsklasse erzeugt, statt bestehende zu kopieren. Sie berechnet Zwischenwerte zwischen vorhandenen Datenpunkten der Minderheitsklasse, um neue zu schaffen. Bei zwei betrügerischen Transaktionen von 10.000 USD und 20.000 USD erzeugt SMOTE eine neue Transaktion mit einem Betrag zwischen diesen Werten, etwa 17.000 USD. 
+
+**ADASYN** erweitert SMOTE, indem es sich auf schwer klassifizierbare Datenpunkte konzentriert. Während SMOTE Datenpunkte gleichmässig erzeugt, generiert ADASYN mehr synthetische Punkte dort, wo die Minderheitsklasse schwächer vertreten ist. ADASYN bewertet die Schwierigkeit, jeden Punkt der Minderheitsklasse korrekt zu klassifizieren. Bei zwei betrügerischen Transaktionen – eine mit seltenem und eine mit üblichem Währungsformat – erstellt ADASYN mehr synthetische Transaktionen für die seltene Währung, da diese schwerer zu klassifizieren ist. 
+
+
