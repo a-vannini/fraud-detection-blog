@@ -11,7 +11,7 @@ layout: default
 <!-- [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml) -->
 
 
-Dieser Blogbeitrag bietet Einblicke in die Erkennung von Geldwäscheversuchen mit Machine Learning. Wir stellen verschiedene Ansätze vor und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die ersten Schritte von klassischen Machine-Learning-Algorithmen bis zu innovativen Graph Neural Networks zu erläutern. Dabei richtet sich der Blogbeitrag an Interessierte die ein gewisses Flair für Daten oder Statistik mitbringen und denen der Begriff "Modell" nicht ganz neu ist.
+Dieser Blogbeitrag bietet Einblicke in die Erkennung von Geldwäscheversuchen mit Machine Learning. Wir stellen verschiedene Ansätze vor und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die ersten Schritte von klassischen Machine-Learning-Algorithmen bis zu innovativen Graph Neural Networks zu erläutern. Die Komplexität steigt mit zunehmender Länge des Blogartikels. Dabei richtet sich der Blogbeitrag an Interessierte die ein gewisses Flair für Daten oder Statistik mitbringen und denen der Begriff "Modell" nicht ganz neu ist.
 
 Laut den Vereinten Nationen werden jährlich 2 bis 5 % des globalen BIP – etwa 800 Milliarden bis 2 Billionen US-Dollar – durch Geldwäsche verschleiert. Ein wiederkehrendes Problem in der Geldwäsche-Forschung ist die Verfügbarkeit realer Datensätze. Das AMLworld-Framework bietet hier eine Lösung, indem es synthetische Finanztransaktionen generiert, die reale Szenarien mit hoher Präzision nachbilden, einschliesslich bekannter Geldwäschemuster. Diese vollständig gelabelten Daten ermöglichen eine objektive Bewertung von Algorithmen (Altman et al., 2024). Grundlage des AMLworld-Frameworks ist der synthetische Datensatz [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml), mit dem auch wir in unserem Projekt arbeiteten und den wir im nächsten Kapitel vorstellen. 
 
@@ -180,7 +180,6 @@ Dieser Baum liefert eine erste Einschätzung. GBT erstellt viele solcher Bäume 
 
 
 ### Data-Split 
-
 <img src="assets/datasplit_time.png" alt="datasplit_time" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
 Um maschinelle Lernmodelle zu entwickeln, teilen wir den Datensatz in Trainings-, Validierungs- und Testdaten auf. Dieser Schritt ist entscheidend, damit das Modell nicht nur effektiv lernt, sondern auch auf unbekannte Daten verallgemeinert und seine Leistung präzise bewertet wird. Altman et al. (2024) schlagen eine Aufteilung von 60/20/20 vor: 
@@ -192,13 +191,11 @@ In unserem Projekt folgten wir dieser Empfehlung. Der IBM-AML-Datensatz umfasst 
 
 
 ### Die Modelle detailliert
-
 Wir implementierten zwei Varianten von Gradient Boost Modellen:  
 - XGBoost (Extreme Gradient Boosting) 
 - LightGBM (Light Gradient Boosting Machine) 
 
 #### XGBoost
-
 XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
 
 > Wieder unser Beispiel: Betrachten wir wieder die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
@@ -214,23 +211,20 @@ XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Lo
 - Das Modell schätzte die erste Transaktion (betrügerisch) mit einer hohen Wahrscheinlichkeit von 0,80 ein. Diese liegt nahe an der tatsächlichen Klasse, daher bleibt der Log-Loss-Beitrag gering (0,223).  
 - Bei der zweiten Transaktion (legitim) sagte das Modell korrekt eine niedrige Wahrscheinlichkeit von 0,20 voraus, was ebenfalls zu einem kleinen Log-Loss-Beitrag führt.  
 - Bei der dritten Transaktion (legitim) prognostizierte das Modell jedoch fälschlicherweise eine hohe Wahrscheinlichkeit von 0,90 für "betrügerisch". Dieser Fehler wird stark bestraft (2,302).  
-
 Der Gesamt-Log-Loss ergibt sich aus dem Durchschnitt der einzelnen Beiträge. 
 
 #### LightGBM
-
 LightGBM wurde entwickelt von Microsoft. Seine Effektivität beruht auf der innovativen Methode des Leaf-Wise Tree Growth beim Aufbau von Entscheidungsbäumen. Herkömmliche Algorithmen erweitern Bäume symmetrisch und levelweise, indem sie alle Knoten gleichzeitig ausbauen.
-<img src="assets/entscheidungsbaum_deluxe-gather.png" alt="entscheidungsbaum_deluxe-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+<img src="assets/entscheidungsbaum_deluxe.png" alt="entscheidungsbaum_deluxe-gather" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
 LightGBM hingegen wächst blattweise und fügt Verzweigungen dort hinzu, wo sie den grössten Informationsgewinn bieten. So entstehen oft asymmetrische Bäume.
-<img src="assets/entscheidungsbaum_lightgbm-gather.png" alt="entscheidungsbaum_lightgbm" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+<img src="assets/entscheidungsbaum_lightgbm.png" alt="entscheidungsbaum_lightgbm" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
 LightGBM passt zudem automatisch die Gewichtung der Klassen an, indem es den Anteil der Minderheitsklasse berücksichtigt. Ist diese Option aktiviert, erhöht der Algorithmus das Gewicht der seltenen Klasse, etwa bei betrügerischen Transaktionen, sodass sie im Training mehr Einfluss auf die Verlustfunktion hat. Beim Beispiel mit 50 Transaktionen, von denen 49 legitim und 1 betrügerisch sind, weist LightGBM der betrügerischen Klasse automatisch ein höheres Gewicht zu, etwa im Verhältnis 49:1. Zusätzlich erlaubt LightGBM, die Gewichtung der positiven Klasse manuell zu definieren. Unter anderem dank des Leaf-Wise Tree Growth arbeitet der Algorithmus speicher- und zeitoptimierter als XGBoost. 
 
 
 ### Sampling
-
-Um das Problem unausgewogener Klassenverteilung zu lösen, haben wir verschiedene Sampling-Methoden eingesetzt: Undersampling, Oversampling, SMOTE und ADASYN.  
+Um das Problem unausgewogener Klassenverteilung zu lösen, haben wir verschiedene Sampling-Methoden eingesetzt: 
 
 Beim **Undersampling** reduzieren wir die Grösse der Mehrheitsklasse, indem wir zufällig eine Teilmenge auswählen. So gleichen wir den Datensatz aus. Im Beispiel mit 49 legitimen und 1 betrügerischen Transaktion würde das bedeuten, dass wir nach dem Undersampling je 1 legitime und 1 betrügerische Transaktion haben. Dabei entfernen wir viele Datenpunkte, was das Risiko birgt, wichtige Informationen der Mehrheitsklasse zu verlieren. 
 
@@ -241,3 +235,31 @@ Beim **Oversampling** wird die Minderheitsklasse künstlich vergrössert, indem 
 **ADASYN** erweitert SMOTE, indem es sich auf schwer klassifizierbare Datenpunkte konzentriert. Während SMOTE Datenpunkte gleichmässig erzeugt, generiert ADASYN mehr synthetische Punkte dort, wo die Minderheitsklasse schwächer vertreten ist. ADASYN bewertet die Schwierigkeit, jeden Punkt der Minderheitsklasse korrekt zu klassifizieren. Bei zwei betrügerischen Transaktionen – eine mit seltenem und eine mit üblichem Währungsformat – erstellt ADASYN mehr synthetische Transaktionen für die seltene Währung, da diese schwerer zu klassifizieren ist. 
 
 
+## Graph-basierte Modelle
+
+Graph-basierte Modelle erfassen im Gegensatz zu nicht graph-basierten Ansätzen die Beziehungen zwischen den Akteuren (Knoten) im Netzwerk. Jede Transaktion erscheint als Verbindung (Kante) zwischen zwei Akteuren, was ein vollständiges Transaktionsnetzwerk schafft. Dieser Ansatz eignet sich besonders, um Muster wie Simple Cycles oder Scatter-Gather-Strukturen zu erkennen, die typisch für Geldwäsche sind, wie im Kapitel Daten erklärt.  
+
+Im graph-basierten Teil unseres Projekts haben wir verschiedene Ansätze kombiniert: 
+- Gradient Boosted Trees mit Graph Feature Preprocessor (GFP): Der GFP zieht aus dem Graphen Netzwerkmerkmale wie die Anzahl der ein- und ausgehenden Verbindungen eines Kontos. Diese zusätzlichen Merkmale lassen sich dem Datensatz hinzufügen und für das Trainieren von Modellen nutzen. 
+- Graph Neural Networks (GNN): GNNs analysieren Netzwerke tiefer, indem sie die Beziehungen zwischen Knoten und Kanten modellieren. Besonders das Graph Isomorphism Network (GIN) kommt zum Einsatz, optimiert für die Erkennung struktureller Ähnlichkeiten im Netzwerk. Dieses GNN fand auch im Paper von Altman et al. (2024) Verwendung, das die Entstehung des Datensatzes beschreibt. 
+
+Graph-basierte Modelle erkennen versteckte Muster in Transaktionsnetzwerken, indem sie direkt die Beziehungen zwischen Knoten und die Netzwerkstruktur einbeziehen. Sie nutzen die Verbindungen und den Kontext der Netzwerktopologie. Allerdings sind sie oft rechenintensiver und erfordern detailliertere Daten, wie die Netzwerktopologie und präzise definierte Knoten- und Kantenattribute. Ihre höhere Komplexität erschwert die Skalierung auf sehr große Netzwerke, da sowohl der Speicherbedarf als auch die Rechenzeit erheblich steigen.
+
+### Graphen
+
+Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges) bestehen und zur Darstellung von Beziehungen zwischen Objekten verwendet werden. Knoten repräsentieren dabei die Objekte selbst, während die Kanten die Verbindungen zwischen diesen Objekten beschreiben. In der Graphentheorie unterscheidet man zwischen verschiedenen Arten von Graphen: 
+
+<img src="assets/graphen_theorie.png" alt="graphen_theorie" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
+
+- Graphen ohne Mehrfachkanten:
+    - Diese Graphen erlauben pro Knotenpaar maximal eine Kante. 
+    - Die Verbindungen können dabei gerichtet oder ungerichtet sein. 
+- Graphen mit Mehrfachkanten (Multigraphen):
+    - Hier können mehrere Kanten zwischen denselben Knoten existieren, die unterschiedliche Relationen oder mehrfach vorkommende Transaktionen darstellen. 
+    - Multigraphen können ebenfalls ungerichtet oder gerichtet sein. 
+
+> Beispiel: Ein ungerichteter Graph zeigt eine soziale Verbindung, etwa Freundschaften, während ein gerichteter Graph Transaktionen oder Flüsse zwischen Konten darstellt.
+
+In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein gerichtetes Multigraph-Modell gewählt. In diesem Modell repräsentieren die Knoten Bankkonten, während die Kanten Transaktionen zwischen diesen Konten darstellen. Da zwischen zwei Konten mehrere Transaktionen stattfinden können, eignet sich ein Multigraph hervorragend, um diese Dynamik zu modellieren. 
+<img src="assets/graph.png" alt="graph" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+Die Kanten unseres Graphen sind dabei nicht nur einfache Verbindungen, sondern tragen zusätzliche Informationen in Form von Attributen. Dazu gehören der Betrag der Transaktion in Original- und USD-Währung, die verwendete Währung, das Zahlungsformat und ein Indikator, ob die Transaktion verdächtig ist oder nicht. 
