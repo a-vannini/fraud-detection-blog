@@ -301,7 +301,7 @@ Rechts: Verarbeitung in einem GNN. Hier sieht man, wie ein GNN die Informationen
 - Node A (oben): A erhält Informationen von B, C und D. Jeder Nachbarknoten wird einzeln transformiert (dunkelgraue Rechtecke). Danach aggregiert man die transformierten Daten (weisse Quadrate), um die Merkmale von A zu aktualisieren. 
 - Node C (unten): C erhält nur Informationen von D. Auch hier transformiert man die Nachbarattribute, aggregiert sie und aktualisiert die Merkmale von C.
 
-Die detaillierte Verarbeitung in einem GNN verläuft folgendermaßen: 
+Im Detail läuft die Verarbeitung in einem GNN folgendermaßen: 
 
 **Schritt 1: Transformation der Nachbarn**: 
 Jeder Knoten sammelt Informationen aus seiner Umgebung. In unserem Beispiel erhält Knoten A Daten von B, C und D. Bevor diese Daten weiterfließen, transformiert man sie einzeln, um sie nützlicher zu machen. Eine Gewichtsmatrix (eine Art Filter) und eine Aktivierungsfunktion heben dabei wichtige Merkmale hervor. Im Bild symbolisieren die dunkelgrauen Rechtecke diesen Prozess. 
