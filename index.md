@@ -244,7 +244,7 @@ Im graph-basierten Teil unseres Projekts haben wir verschiedene Ansätze kombini
 - Gradient Boosted Trees mit Graph Feature Preprocessor (GFP): Der GFP zieht aus dem Graphen Netzwerkmerkmale wie die Anzahl der ein- und ausgehenden Verbindungen eines Kontos. Diese zusätzlichen Merkmale lassen sich dem Datensatz hinzufügen und für das Trainieren von Modellen nutzen. 
 - Graph Neural Networks (GNN): GNNs analysieren Netzwerke tiefer, indem sie die Beziehungen zwischen Knoten und Kanten modellieren. Besonders das Graph Isomorphism Network (GIN) kommt zum Einsatz, optimiert für die Erkennung struktureller Ähnlichkeiten im Netzwerk. Dieses GNN fand auch im Paper von Altman et al. (2024) Verwendung, das die Entstehung des Datensatzes beschreibt. 
 
-Graph-basierte Modelle erkennen versteckte Muster in Transaktionsnetzwerken, indem sie direkt die Beziehungen zwischen Knoten und die Netzwerkstruktur einbeziehen. Sie nutzen die Verbindungen und den Kontext der Netzwerktopologie. Allerdings sind sie oft rechenintensiver und erfordern detailliertere Daten, wie die Netzwerktopologie und präzise definierte Knoten- und Kantenattribute. Ihre höhere Komplexität erschwert die Skalierung auf sehr große Netzwerke, da sowohl der Speicherbedarf als auch die Rechenzeit erheblich steigen.
+Graph-basierte Modelle erkennen versteckte Muster in Transaktionsnetzwerken, indem sie direkt die Beziehungen zwischen Knoten und die Netzwerkstruktur einbeziehen. Sie nutzen die Verbindungen und den Kontext der Netzwerktopologie. Allerdings sind sie oft rechenintensiver und erfordern detailliertere Daten, wie die Netzwerktopologie und präzise definierte Knoten- und Kantenattribute. Ihre höhere Komplexität erschwert die Skalierung auf sehr grosse Netzwerke, da sowohl der Speicherbedarf als auch die Rechenzeit erheblich steigen.
 
 ### Graphen
 Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges) bestehen und zur Darstellung von Beziehungen zwischen Objekten verwendet werden. Knoten repräsentieren dabei die Objekte selbst, während die Kanten die Verbindungen zwischen diesen Objekten beschreiben. In der Graphentheorie unterscheidet man zwischen verschiedenen Arten von Graphen: 
@@ -266,42 +266,69 @@ In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein g
 
 ### Data-Split
 <img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
-Um die Daten optimal für Training und Evaluierung zu trennen, führten wir einen Community Split durch. Dieser Ansatz trennt die Splits vollständig und verhindert jegliche Interaktion zwischen ihnen, was Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten – effektiv vermeidet. Zunächst wandelten wir die tabellarischen Daten in einen Graphen um, wie im vorherigen Kapitel beschrieben. Dann identifizierten wir die größte Weakly Connected Component (WCC), den größten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. So bleibt der Graph konsistent und zusammenhängend. 
+Um die Daten optimal für Training und Evaluierung zu trennen, führten wir einen Community Split durch. Dieser Ansatz trennt die Splits vollständig und verhindert jegliche Interaktion zwischen ihnen, was Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten – effektiv vermeidet. Zunächst wandelten wir die tabellarischen Daten in einen Graphen um, wie im vorherigen Kapitel beschrieben. Dann identifizierten wir die grösste Weakly Connected Component (WCC), den grössten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. So bleibt der Graph konsistent und zusammenhängend. 
 
 
-Im nächsten Schritt teilten wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in großen Netzwerken, indem er iterativ die Modularity maximiert – ein Maß für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
+Im nächsten Schritt teilten wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in grossen Netzwerken, indem er iterativ die Modularity maximiert – ein Mass für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
 <img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 400px;">
 
 Um die beste Community-Einteilung zu erreichen, evaluierten wir in einer Schleife mehrere Varianten. Unser Ziel dabei ist es, die Anzahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) zu minimieren und gleichzeitig sicherzustellen, dass die Knotenverteilung in den Splits dem Verhältnis von 60% Training, 20% Validierung und 20% Test entspricht. Dieses Vorgehen ost entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. 
 
-Abschließend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwischen Knoten desselben Splits existieren. So bleibt die Trennung der Daten gewährleistet und die Integrität der Community-Struktur erhalten.
+Abschliessend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwischen Knoten desselben Splits existieren. So bleibt die Trennung der Daten gewährleistet und die Integrität der Community-Struktur erhalten.
 
 
 ### Die Modelle detailliert
 
+
+
 #### GFP
+
 HIER FEHLT DER GANZE TEXT
 
+
+
 #### GNN allgemein
-Graph-basierte neuronale Netzwerke (GNNs) ähneln klassischen neuronalen Netzwerken, unterscheiden sich jedoch grundlegend: Während klassische Netzwerke Daten wie Bilder oder Töne in fester Reihenfolge verarbeiten, fehlt Graphen eine solche Ordnung. Sie sind flexibel, ohne klaren Anfang oder Endpunkt. GNNs lösen dieses Problem, indem sie jeden Knoten als eigenständiges Netzwerk behandeln, das Informationen von Nachbarn aufnimmt und die Graphenstruktur berücksichtigt. Anders als klassische Netzwerke nutzen Knoten in einem GNN eine gemeinsame Gewichtsmatrix. Diese geteilten Gewichte ermöglichen es dem Modell, universelle Muster zu lernen, die auf alle Knoten anwendbar sind, unabhängig von deren Position oder Rolle im Graphen. Diese Methode eignet sich besonders für Aufgaben wie die Betrugserkennung, bei denen dieselben Regeln, etwa für verdächtige Transaktionen, auf alle Knoten übertragbar sind.
 
-<!-- <img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="display: block; margin: 10px auto; width: 200px;"> -->
+Graph-basierte neuronale Netzwerke (GNNs) ähneln klassischen neuronalen Netzwerken, unterscheiden sich jedoch grundlegend: Klassische Netzwerke verarbeiten Daten wie Bilder oder Töne in fester Reihenfolge, während Graphen keine solche Ordnung besitzen. Sie sind flexibel, ohne klaren Anfang oder Endpunkt. GNNs lösen dieses Problem, indem sie jeden Knoten als eigenständiges Netzwerk behandeln, das Informationen von Nachbarn aufnimmt und die Graphenstruktur berücksichtigt. Anders als klassische Netzwerke nutzen Knoten in einem GNN eine gemeinsame Gewichtsmatrix. Diese geteilten Gewichte ermöglichen es dem Modell, universelle Muster zu lernen, die auf alle Knoten anwendbar sind, unabhängig von deren Position oder Rolle im Graphen. Diese Methode eignet sich besonders für Aufgaben wie die Betrugserkennung, bei denen dieselben Regeln, etwa für verdächtige Transaktionen, auf alle Knoten übertragbar sind.
 
-<img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+<img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="float: right; margin-left: 20px; width: 300px;">
 
-Das Bild zeigt links einen gerichteten Graphen und rechts die zugehörigen neuronalen Netzwerke für zwei 
-Zielknoten: Node A (oben) und Node C (unten).
+Das Bild zeigt links einen gerichteten Graphen und rechts die neuronalen Netzwerke für zwei Zielknoten: Node A (oben) und Node C (unten). 
 
-Links: Der gerichtete Graph
-Die Knoten A, B, C und D sind durch gerichtete Kanten verbunden. Ein gerichteter Graph bedeutet, dass Informationen nur in der Richtung der Pfeile zwischen den Knoten fließen. Beispielsweise empfängt A Informationen von B, C und D, während C nur Informationen von D erhält.
+Links: Der gerichtete Graph verbindet die Knoten A, B, C und D mit gerichteten Kanten. Informationen fliessen nur in Pfeilrichtung. A empfängt Daten von B, C und D, während C nur von D Informationen erhält. 
 
-Rechts: Verarbeitung in einem GNN
-Auf der rechten Seite wird veranschaulicht, wie ein GNN die Informationen aus den Nachbarknoten eines Zielknotens (z. B. 
-A oder C) verarbeitet:
+Rechts: Verarbeitung in einem GNN. Hier sieht man, wie ein GNN die Informationen der Nachbarknoten eines Zielknotens (z. B. A oder C) verarbeitet: 
+- Node A (oben): A erhält Informationen von B, C und D. Jeder Nachbarknoten wird einzeln transformiert (dunkelgraue Rechtecke). Danach aggregiert man die transformierten Daten (weisse Quadrate), um die Merkmale von A zu aktualisieren. 
+- Node C (unten): C erhält nur Informationen von D. Auch hier transformiert man die Nachbarattribute, aggregiert sie und aktualisiert die Merkmale von C.
 
-Node A (oben): A empfängt Informationen von den Nachbarknoten B, C und D. Jeder Nachbarknoten wird individuell transformiert, dargestellt durch die dunkelgrauen Rechtecke. Anschließend werden die transformierten Informationen aggregiert (weiße Quadrate), um sie für die Aktualisierung der Merkmale von A zu nutzen.
+Die detaillierte Verarbeitung in einem GNN verläuft folgendermaßen: 
 
-Node C (unten): C empfängt Informationen nur von D. Auch hier erfolgt eine Transformation der Nachbarattribute, gefolgt von einer Aggregation und der Aktualisierung der Merkmale von C.
+**Schritt 1: Transformation der Nachbarn**: 
+Jeder Knoten sammelt Informationen aus seiner Umgebung. In unserem Beispiel erhält Knoten A Daten von B, C und D. Bevor diese Daten weiterfließen, transformiert man sie einzeln, um sie nützlicher zu machen. Eine Gewichtsmatrix (eine Art Filter) und eine Aktivierungsfunktion heben dabei wichtige Merkmale hervor. Im Bild symbolisieren die dunkelgrauen Rechtecke diesen Prozess. 
+
+Beispiel: Jeder Nachbar enthält Informationen über eine Transaktion, etwa die Höhe des Betrags. 
+- Node B: Transaktionsbetrag = 100
+- Node C: Transaktionsbetrag = 200
+- Node D: Transaktionsbetrag = 150
+
+Die Gewichtsmatrix könnte die Beträge so anpassen, dass sie je nach ihrer Bedeutung für die Analyse stärker oder schwächer gewichtet werden.
+
+**Schritt 2: Nachbarschaftsdaten zusammenfassen**
+Sobald die Nachbardaten umgewandelt sind, fassen wir sie zu einer einzigen Information zusammen. Diese Zusammenfassung vereint alle Nachbardaten in einem Wert. Häufige Methoden sind: 
+- Summe: Wir addieren die umgewandelten Daten. 
+- Mittelwert: Wir berechnen den Durchschnitt der Daten. 
+- Max-Pooling: Wir wählen den höchsten Wert aus. 
+
+In unserem Beispiel könnte die Aggregation so aussehen:
+- Transformierte Beträge: B = 50, C = 100, D = 75
+- Aggregation (Summe): 50 + 100 + 75 = 225
+Im Bild zeigen die weißen Quadrate den Teil, der die Transformation darstellt.
+
+
+**Schritt 3: Aktualisierung des Zielknotens**
+Nach der Aggregation aktualisiert das GNN die Merkmale des Zielknotens. Es kombiniert die ursprünglichen Merkmale des Knotens mit den gesammelten Informationen seiner Nachbarn. So wird der Knoten „intelligenter“, indem er nicht nur seine eigenen Attribute, sondern auch die seiner Umgebung einbezieht. 
+
+Beispiel: Node A hat ursprünglich den Wert 10. Nach der Aggregation der Nachbardaten (225) erhält A den neuen Wert 235.
 
 
 #### GIN
