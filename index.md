@@ -11,7 +11,7 @@ layout: default
 <!-- [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml) -->
 
 
-Dieser Blogbeitrag bietet Einblicke in die Erkennung von Geldwäscheversuchen mit Machine Learning. Wir stellen verschiedene Ansätze vor und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die ersten Schritte von klassischen Machine-Learning-Algorithmen bis zu innovativen Graph Neural Networks zu erläutern. Die Komplexität steigt mit zunehmender Länge des Blogartikels. Dabei richtet sich der Blogbeitrag an Interessierte die ein gewisses Flair für Daten oder Statistik mitbringen und denen der Begriff "Modell" nicht ganz neu ist.
+Dieser Blogbeitrag zeigt, wie man Geldwäscheversuche mit Machine Learning erkennt. Wir präsentieren verschiedene Ansätze und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die Entwicklung von klassischen Machine-Learning-Algorithmen bis hin zu innovativen Graph Neural Networks zu erklären. Mit der Länge des Artikels wächst die Komplexität. Der Beitrag richtet sich an Leser, die ein Faible für Daten oder Statistik haben und mit dem Begriff "Modell" vertraut sind.
 
 Laut den Vereinten Nationen werden jährlich 2 bis 5 % des globalen BIP – etwa 800 Milliarden bis 2 Billionen US-Dollar – durch Geldwäsche verschleiert. Ein wiederkehrendes Problem in der Geldwäsche-Forschung ist die Verfügbarkeit realer Datensätze. Das AMLworld-Framework bietet hier eine Lösung, indem es synthetische Finanztransaktionen generiert, die reale Szenarien mit hoher Präzision nachbilden, einschliesslich bekannter Geldwäschemuster. Diese vollständig gelabelten Daten ermöglichen eine objektive Bewertung von Algorithmen (Altman et al., 2024). Grundlage des AMLworld-Frameworks ist der synthetische Datensatz [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml), mit dem auch wir in unserem Projekt arbeiteten und den wir im nächsten Kapitel vorstellen. 
 
@@ -275,3 +275,56 @@ Im nächsten Schritt teilten wir die Knoten mit dem Louvain-Algorithmus in Grupp
 Um die beste Community-Einteilung zu erreichen, evaluierten wir in einer Schleife mehrere Varianten. Unser Ziel dabei ist es, die Anzahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) zu minimieren und gleichzeitig sicherzustellen, dass die Knotenverteilung in den Splits dem Verhältnis von 60% Training, 20% Validierung und 20% Test entspricht. Dieses Vorgehen ost entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. 
 
 Abschließend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwischen Knoten desselben Splits existieren. So bleibt die Trennung der Daten gewährleistet und die Integrität der Community-Struktur erhalten.
+
+
+### Die Modelle detailliert
+
+#### GFP
+HIER FEHLT DER GANZE TEXT
+
+#### GNN allgemein
+Graph-basierte neuronale Netzwerke (GNNs) ähneln klassischen neuronalen Netzwerken, unterscheiden sich jedoch grundlegend: Während klassische Netzwerke Daten wie Bilder oder Töne in fester Reihenfolge verarbeiten, fehlt Graphen eine solche Ordnung. Sie sind flexibel, ohne klaren Anfang oder Endpunkt. GNNs lösen dieses Problem, indem sie jeden Knoten als eigenständiges Netzwerk behandeln, das Informationen von Nachbarn aufnimmt und die Graphenstruktur berücksichtigt. Anders als klassische Netzwerke nutzen Knoten in einem GNN eine gemeinsame Gewichtsmatrix. Diese geteilten Gewichte ermöglichen es dem Modell, universelle Muster zu lernen, die auf alle Knoten anwendbar sind, unabhängig von deren Position oder Rolle im Graphen. Diese Methode eignet sich besonders für Aufgaben wie die Betrugserkennung, bei denen dieselben Regeln, etwa für verdächtige Transaktionen, auf alle Knoten übertragbar sind.
+
+<!-- <img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="display: block; margin: 10px auto; width: 200px;"> -->
+
+<img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+
+Das Bild zeigt links einen gerichteten Graphen und rechts die zugehörigen neuronalen Netzwerke für zwei 
+Zielknoten: Node A (oben) und Node C (unten).
+
+Links: Der gerichtete Graph
+Die Knoten A, B, C und D sind durch gerichtete Kanten verbunden. Ein gerichteter Graph bedeutet, dass Informationen nur in der Richtung der Pfeile zwischen den Knoten fließen. Beispielsweise empfängt A Informationen von B, C und D, während C nur Informationen von D erhält.
+
+Rechts: Verarbeitung in einem GNN
+Auf der rechten Seite wird veranschaulicht, wie ein GNN die Informationen aus den Nachbarknoten eines Zielknotens (z. B. 
+A oder C) verarbeitet:
+
+Node A (oben): A empfängt Informationen von den Nachbarknoten B, C und D. Jeder Nachbarknoten wird individuell transformiert, dargestellt durch die dunkelgrauen Rechtecke. Anschließend werden die transformierten Informationen aggregiert (weiße Quadrate), um sie für die Aktualisierung der Merkmale von A zu nutzen.
+
+Node C (unten): C empfängt Informationen nur von D. Auch hier erfolgt eine Transformation der Nachbarattribute, gefolgt von einer Aggregation und der Aktualisierung der Merkmale von C.
+
+
+#### GIN
+
+
+#### GINEConv von PyTorch 
+
+
+
+# Resultate
+
+# Outlook
+
+# Quellen
+
+Altman, E., Blanuša, J., von Niederhäusern, L., Egressy, B., Anghel, A., & Atasu, K. (2024). *Realistic Synthetic Financial Transactions for Anti-Money Laundering Models.* 37th Conference on Neural Information Processing Systems (NeurIPS). arXiv:2306.16424 
+
+Blanuša, J., Cravero Baraja, M., Anghel, A., von Niederhäusern, L., Altman, E., Pozidis, H., & Atasu, K. (2024). *Graph Feature Preprocessor: Real-time Subgraph-based Feature Extraction for Financial Crime Detection.* ACM ICAIF 2024. arXiv:2402.08593 
+
+Egressy, B., von Niederhäusern, L., Blanuša, J., Altman, E., Wattenhofer, R., & Atasu, K. (2024). *Provably Powerful Graph Neural Networks for Directed Multigraphs.* AAAI 2024. arXiv:2306.11586 
+
+Liu, Z., Dou, Y., Yu, P. S., Deng, Y., & Peng, H. (2020). *Alleviating the Inconsistency Problem of Applying Graph Neural Network to Fraud Detection.* Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval. [https://doi.org/10.1145/3397271.3401253](https://doi.org/10.1145/3397271.3401253)
+
+Sinayobye, J. O., Kiwanuka, F., & Kaawaase Kyanda, S. (2018). *A State-of-the-Art Review of Machine Learning Techniques for Fraud Detection Research.* SEIA 2018. [https://doi.org/10.1145/3195528.3195534](https://doi.org/10.1145/3195528.3195534) 
+
+Vashistha, A., & Tiwari, A. K. (2024). *Building Resilience in Banking Against Fraud with Hyper Ensemble Machine Learning and Anomaly Detection Strategies.* SN Computer Science, 5(556). [https://doi.org/10.1007/s42979-024-02854-w](https://doi.org/10.1007/s42979-024-02854-w)
