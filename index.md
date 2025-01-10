@@ -384,41 +384,25 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 # Outlook
 
-Um die Leistung des bestehenden Modells weiter zu steigern, könnten verschiedene Optimierungsschritte und Erweiterungen umgesetzt werden. Im alggemeinen könnt noch eine Feature Selection gemacht werden. Eine gezielte Auswahl der wichtigsten Features könnte die Komplexität des Modells verringern und die Generalisierung verbessern. Zudem: 
+Unsere Arbeit stellt eine Grundlage dar, um erste Berührungen mit graph-basierten Ansätzen zu schaffen. Als Basisarbeit bietet sie  Einblicke in die Stärken und Herausforderungen solcher Ansätze, doch gleichzeitig erkennen wir, dass unsere Modelle noch nicht annähernd an die konzeptionellen Überlegungn und Komplexitätder in der Literatur vorgestellten Methoden heranreichen. Hierfür hätten wir unser Konzept nochmal überarbeiten müssen. Hierfür wäre auch die frühzeitige Planung und Sicherstellung ausreichender Rechenressourcen. Die graph-basierten Ansätze GFP und GNN erfordern erhebliche Rechenkapazitäten. Wir wollten etwa die mit dem GFP generierten Features auch noch mit einem GINe-Modell trainieren und entschieden, dass dies in dieser Konstellation nciht möglich ist, da bereits XGBoost und LightGBM zur totalen Auslastung des Servers führte. 
 
- 
+Ein zentraler Faktor, der den Fortschritt unseres Projekts beeinflusst hat, war der Aufwand für das technische Setup. Besonders der Einsatz des Graph Preprocessors von SnapML stellte uns vor eine Herausforderung. Die fehlende Kompabilität für Windows und moderne Apple-Architekturen, verlangten die Einrichtung einer Multi-Linux-Umgebung in Docker. Viel Zeit ging hier für die Konfiguration und Fehlerbehebung verloren, die wir besser in die Modellentwicklung hätten investieren können.
 
-Verbesserungen für LightGBM: 
+Um die Leistung der Modelle zu steigern, empfehlen wir folgende Maßnahmen: 
 
-Scale_pos_weight Parameter: Durch die Anpassung dieses Parameters könnte das Ungleichgewicht der Klassen im Datensatz besser ausgeglichen werden, was insbesondere bei stark unausgeglichenen Datensätzen relevant ist. 
+Allgemein: 
+- Gezielte Merkmalsauswahl: Wählen Sie präzise die wichtigsten Merkmale aus, um die Modellkomplexität zu verringern und die Generalisierungsfähigkeit zu erhöhen. 
+- Erweiterte Datenanalyse: Führen Sie zusätzliche Analysen durch, um neue, bisher ungenutzte Merkmale zu entdecken, die für die Modellierung wertvoll sind. 
 
-Focal Loss als manuelle Verlustfunktion: Die Implementierung einer fokussierten Verlustfunktion wie der Focal Loss würde die Gewichtung schwer zu klassifizierender Samples verstärken, was die Performance bei unbalancierten Daten weiter verbessern könnte. 
+LightGBM: 
+- Anpassung des Parameters scale_pos_weight: Justieren Sie diesen Parameter, um das Klassenungleichgewicht im Datensatz besser auszugleichen und die Erkennung seltener Klassen zu verbessern. 
+- Benutzerdefinierte Verlustfunktion: Implementieren Sie eine fokussierte Verlustfunktion wie Focal Loss, um schwer zu klassifizierende Instanzen stärker zu gewichten und die Modellleistung bei unbalancierten Daten zu erhöhen. 
 
-Erweiterungen des GIN-Modells: 
-
-Alternative GNN-Architekturen: Der Einsatz von PNA (Principal Neighbourhood Aggregation) oder anderen fortschrittlichen GNN-Modellen könnte die Repräsentationskraft des Netzwerks erhöhen. 
-
-Feature Engineering: 
-
-GFP-Features hinzufügen: Die Nutzung von Graph Fingerprints (GFP) könnte helfen, wiederkehrende Muster in der Graphstruktur zu identifizieren und die Trennbarkeit der Daten zu verbessern. 
-
-Erkenntnisse aus der EDA (Exploratory Data Analysis): Weitere explorative Datenanalysen könnten zusätzliche wertvolle Merkmale aufdecken, die für die Modellierung hilfreich sind. 
-
-Anpassungen der Zielvariable und Modellstrategie: Node Classification statt Edge Classification: Die Umstellung auf Node Classification anstelle der aktuell genutzten Edge Classification könnte helfen, den Graphen anders zu repräsentieren und bessere Ergebnisse zu erzielen. Der Code dafür ist bereits vorhanden, wurde jedoch aus Zeitgründen nicht weiter analysiert. 
-
-Sampling-Methoden: Sampling-Methoden auf GIN anwenden: Die Anwendung von Sampling-Methoden wie SMOTE oder Random Undersampling könnte auch im GIN-Ansatz die Performance verbessern. Erste Tests mit XGBoost zeigten, dass dies signifikant helfen kann. 
-
-Fazit: Durch eine Kombination aus verbesserten Algorithmen, gezieltem Feature Engineering und Sampling-Methoden könnte die Modellperformance weiter optimiert werden. Insbesondere der Einsatz alternativer GNN-Modelle und die Anpassung der Modellarchitektur könnten das Potenzial zur Klassifikation weiter ausschöpfen. 
-
-
-
-
-
-
-
-
-
-
+GINe: 
+- Fortschrittliche Aggregationsmethoden: Nutzen Sie moderne Modelle wie PNA (Principal Neighbourhood Aggregation), um die Fähigkeit des Netzwerks zu verbessern, komplexe Graphstrukturen darzustellen. 
+- Integration von GFP-Features: Verwenden Sie Graph Fingerprints (GFP), um wiederkehrende Muster in der Graphstruktur zu erkennen und die Trennschärfe des Modells zu steigern. 
+- Wechsel der Zielvariable: Stellen Sie von Edge Classification auf Node Classification um, um eine alternative Perspektive auf den Graphen zu gewinnen. Diese Anpassung, deren Code bereits existiert, wurde aus Zeitgründen bisher nicht weiter untersucht. 
+- Sampling-Methoden: Wenden Sie Techniken wie SMOTE oder Random Undersampling auf das GIN-Modell an, um die Leistung zu verbessern. Erste Ergebnisse zeigen, dass dies ein vielversprechender Ansatz ist.
 
 
 # Quellen
