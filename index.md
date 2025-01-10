@@ -269,9 +269,7 @@ Um die beste Community-Einteilung zu erreichen, evaluierten wir in einer Schleif
 
 Abschliessend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwischen Knoten desselben Splits existieren. So bleibt die Trennung der Daten gewährleistet und die Integrität der Community-Struktur erhalten.
 
-
-### Die Modelle detailliert
-Hallo
+### Die Modelle detailliert
 
 #### Graph Feature Preprocessor (GFP)
 Die beschriebene Graphstruktur bildet das Fundament des GFP. Er extrahiert graphbasierte Merkmale, die ein Modell nutzen kann. 
@@ -340,12 +338,12 @@ Zusätzlich normalisiert jede Schicht die Knoteneigenschaften mithilfe der **Bat
 
 ##### GINe2
 Das Modell GINe2 erweitert seinen Vorgänger GINe um mehrere konfigurierbare Optionen wie Dropout, Batch-Normalisierung und Edge-Updates, die sich manuell ein- oder ausschalten lassen. Diese Flexibilität macht das Modell vielseitiger und erlaubt es, gezielt auf unterschiedliche Anforderungen bei Graphdaten einzugehen. Die wichtigste Neuerung ist das **Dropout**: Es deaktiviert während des Trainings zufällig Neuronen, um Überanpassung (Overfitting) zu verhindern. 
-Ohne Dropout stuft das Modell etwa vor allem Transaktionen mit ungewöhnlich hohen Beträgen als verdächtig ein, da diese im Training oft als Betrug markiert wurden. Mit Dropout berücksichtigt es zusätzlich andere Merkmale wie die Anzahl der Transaktionen, die Währung oder die Verbindungsfrequenz zwischen bestimmten Konten. So erkennt es sowohl offensichtliche als auch versteckte Muster, etwa ein auffälliges Netzwerk kleiner, häufiger Zahlungen. Ist Dropout aktiviert, greift es sowohl bei der Verarbeitung der Kantenattribute als auch in den abschließenden Schichten des Modells.
+Ohne Dropout stuft das Modell etwa vor allem Transaktionen mit ungewöhnlich hohen Beträgen als verdächtig ein, da diese im Training oft als Betrug markiert wurden. Mit Dropout berücksichtigt es zusätzlich andere Merkmale wie die Anzahl der Transaktionen, die Währung oder die Verbindungsfrequenz zwischen bestimmten Konten. So erkennt es sowohl offensichtliche als auch versteckte Muster, etwa ein auffälliges Netzwerk kleiner, häufiger Zahlungen. Ist Dropout aktiviert, greift es sowohl bei der Verarbeitung der Kantenattribute als auch in den abschliessenden Schichten des Modells.
 
 ##### GINe3
 Das GINe3-Modell erweitert frühere Versionen durch zusätzliche **Pre- und Post-Processing-Schichten**, die die Knoteneigenschaften vor und nach der GNN-Verarbeitung gezielt verfeinern. 
 
-Die Pre-Processing-Schicht bereitet die Rohdaten der Knoten in mehreren Schritten auf: Lineare Transformationen, Aktivierungsfunktionen wie ReLU (Rectified Linear Unit), Batch-Normalisierung und optional Dropout bringen die Eingangsdaten in eine Form, die optimal für die GNN-Verarbeitung geeignet ist. So werden beispielsweise Transaktionsbeträge skaliert oder normalisiert, um extreme Ausreißer wie ungewöhnlich hohe Summen zu dämpfen und die Werte in einen einheitlichen Bereich zu überführen. Nach der GNN-Verarbeitung entstehen aggregierte Merkmale, die Informationen aus Knoten und Kanten kombinieren. 
+Die Pre-Processing-Schicht bereitet die Rohdaten der Knoten in mehreren Schritten auf: Lineare Transformationen, Aktivierungsfunktionen wie ReLU (Rectified Linear Unit), Batch-Normalisierung und optional Dropout bringen die Eingangsdaten in eine Form, die optimal für die GNN-Verarbeitung geeignet ist. So werden beispielsweise Transaktionsbeträge skaliert oder normalisiert, um extreme Ausreisser wie ungewöhnlich hohe Summen zu dämpfen und die Werte in einen einheitlichen Bereich zu überführen. Nach der GNN-Verarbeitung entstehen aggregierte Merkmale, die Informationen aus Knoten und Kanten kombinieren. 
 
 Im Post-Processing durchlaufen diese Merkmale weitere Schichten, um spezifische Muster zu erkennen. Stuft das Modell etwa ein Konto als "verdächtig" ein, weil es viele kleine Transaktionen empfängt, präzisiert das Post-Processing diese Einschätzung. Es berücksichtigt dabei Kontextinformationen wie die Häufigkeit ähnlicher Transaktionen oder die Bank der Absender.
 
@@ -401,7 +399,7 @@ Unsere Arbeit stellt eine Grundlage dar, um erste Berührungen mit graph-basiert
 
 Ein zentraler Faktor, der den Fortschritt unseres Projekts beeinflusst hat, war der Aufwand für das technische Setup. Besonders der Einsatz des Graph Preprocessors von SnapML stellte uns vor eine Herausforderung. Die fehlende Kompabilität für Windows und moderne Apple-Architekturen, verlangten die Einrichtung einer Multi-Linux-Umgebung in Docker. Viel Zeit ging hier für die Konfiguration und Fehlerbehebung verloren, die wir besser in die Modellentwicklung hätten investieren können.
 
-Um die Leistung der Modelle zu steigern, empfehlen wir folgende Maßnahmen: 
+Um die Leistung der Modelle zu steigern, empfehlen wir folgende Massnahmen: 
 
 Allgemein: 
 - Gezielte Merkmalsauswahl: Wählen Sie präzise die wichtigsten Merkmale aus, um die Modellkomplexität zu verringern und die Generalisierungsfähigkeit zu erhöhen. 
