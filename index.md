@@ -4,12 +4,6 @@ layout: default
 
 ![Banner](assets/banner.png)
 
-<!-- [IBM Datensatz Money Laundering](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml). -->
-
-<!-- <img src="assets/eda_tage.png" alt="Example" style="float: left; margin-right: 20px; width: 300px;"> -->
-<!-- <img src="assets/eda_tage.png" alt="Example" style="float: right; margin-left: 20px; width: 300px;"> -->
-<!-- [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml) -->
-
 
 Dieser Blogbeitrag zeigt, wie man Geldwäscheversuche mit Machine Learning erkennt. Wir präsentieren verschiedene Ansätze und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die Entwicklung von klassischen Machine-Learning-Algorithmen bis hin zu innovativen Graph Neural Networks zu erklären. Mit der Länge des Artikels wächst die Komplexität. Der Beitrag richtet sich an Leser, die ein Faible für Daten oder Statistik haben und mit dem Begriff "Modell" vertraut sind.
 
@@ -17,11 +11,11 @@ Laut den Vereinten Nationen werden jährlich 2 bis 5 % des globalen BIP – etwa
 
 
 # Die Daten
-Der Datensatz umfasst 5.078.345 Transaktionen und 11 Variablen. Er beschreibt Transaktionen zwischen Banken und Konten, einschliesslich Zeitstempeln, Beträgen, Währungen, Zahlungsformaten und Labels, die Transaktionen als legal oder Geldwäsche kennzeichnen. 
+Der Datensatz umfasst 5'078'345 Transaktionen und 11 Variablen. Er beschreibt Transaktionen zwischen Banken und Konten, einschliesslich Zeitstempeln, Beträgen, Währungen, Zahlungsformaten und Labels, die Transaktionen als legal oder Geldwäsche kennzeichnen. 
 Die Transaktionen erstrecken sich über 17 Tage ab dem 1. September 2022. Die meisten Daten stammen aus den ersten 10 Tagen, während die restlichen Tage weniger Aktivität zeigen. Auffällig ist das starke Ungleichgewicht: 99,9 % der Transaktionen sind legal, nur 0,1 % gelten als Geldwäsche.  
 <img src="assets/eda_tage.png" alt="eda_tage" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
-Der Datensatz umfasst 30.470 Banken und 515.080 Konten. Eine kleine Anzahl von Banken und Konten wickelt den Grossteil der Transaktionen ab: Die 10 aktivsten Banken verantworten 18,1 % aller Transaktionen. Bei den Konten gibt es zentrale Akteure, von denen einige über 100.000 Transaktionen ausführen, während viele andere nur ein- oder zweimal aktiv sind. 
+Der Datensatz umfasst 30'470 Banken und 515'080 Konten. Eine kleine Anzahl von Banken und Konten wickelt den Grossteil der Transaktionen ab: Die 10 aktivsten Banken verantworten 18,1 % aller Transaktionen. Bei den Konten gibt es zentrale Akteure, von denen einige über 100.000 Transaktionen ausführen, während viele andere nur ein- oder zweimal aktiv sind. 
 <img src="assets/eda_top30banken.png" alt="eda_top30banken" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
 Die Transaktionsbeträge, sowohl ein- als auch ausgehend, variieren stark. Meistens handelt es sich um kleine Beträge, doch einige extrem hohe Summen (bis zu 1 Billion USD) verzerren den Durchschnitt. Zur besseren Analyse wurden die Beträge in US-Dollar umgerechnet. 
@@ -266,8 +260,7 @@ In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein g
 
 ### Data-Split
 <img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
-Um die Daten optimal für Training und Evaluierung zu trennen, führten wir einen Community Split durch. Dieser Ansatz trennt die Splits vollständig und verhindert jegliche Interaktion zwischen ihnen, was Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten – effektiv vermeidet. Zunächst wandelten wir die tabellarischen Daten in einen Graphen um, wie im vorherigen Kapitel beschrieben. Dann identifizierten wir die grösste Weakly Connected Component (WCC), den grössten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. So bleibt der Graph konsistent und zusammenhängend. 
-
+Um die Daten optimal für Training und Evaluierung zu trennen, wählten wir einen Community Split. Dieser Ansatz sorgt für eine vollständige Trennung der Datensätze und verhindert jeglichen Informationsaustausch zwischen ihnen. So vermeiden wir effektiv Data Leakage – das ungewollte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten. Zunächst wandelten wir die tabellarischen Daten, wie im vorherigen Kapitel beschrieben, in einen Graphen um. Anschliessend identifizierten wir die grösste Weakly Connected Component (WCC), also den grössten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. Dadurch bleibt der Graph konsistent und zusammenhängend. In unserem Fall umfasst die WCC 371'917 Konten und 1'496'497 Transaktionen – das sind 72 % aller Konten, aber nur 29 % der Transaktionen. Der Grund dafür liegt vermutlich darin, dass viele Konten laut unserer Analyse nur eine oder zwei Transaktionen ausführen oder empfangen.
 
 Im nächsten Schritt teilten wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in grossen Netzwerken, indem er iterativ die Modularity maximiert – ein Mass für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
 <img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 400px;">
@@ -280,18 +273,17 @@ Abschliessend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwisc
 ### Die Modelle detailliert
 
 
+#### Graph Feature Preprocessor (GFP)
+Die beschriebene Graphstruktur bildet das Fundament des GFP. Er extrahiert graphbasierte Merkmale, die ein Modell nutzen kann. 
+Ein entscheidender Vorteil des GFP ist seine Fähigkeit, dynamische Graphen zu verwalten. Da Transaktionen nur zeitweise relevant sind, arbeitet der GFP mit einem gleitenden Zeitfenster: Er fügt neue Transaktionen hinzu und entfernt veraltete Daten. So bleibt der Graph übersichtlich und spiegelt stets den aktuellen Zustand des Transaktionsnetzwerks wider. Ein weiteres Kernelement des GFP ist seine Fähigkeit, typische Muster wie Zyklen oder Scatter-Gather-Strukturen in Transaktionsnetzwerken zu erkennen. Der GFP übersetzt diese Muster in numerische Merkmale, die er in das Datenset integriert. Diese Merkmale bereichern die Daten und liefern maschinellen Lernmodellen zusätzliche Informationen für fundierte Entscheidungen. 
 
-#### GFP
-
-HIER FEHLT DER GANZE TEXT
-
+> Beispiel aus unserem Anwendungsfall: Ein Konto führt mehrere Transaktionen durch, die einen Zyklus bilden, etwa A → B → C → A. Der GFP erkennt dieses Muster und berechnet die Anzahl der Zyklen, an denen Konto A beteiligt ist. Diese Information fügt er dem Datenset hinzu, damit ein maschinelles Lernmodell besser einschätzen kann, ob dieses Konto verdächtig ist.
 
 
 #### GNN allgemein
-
 Graph-basierte neuronale Netzwerke (GNNs) ähneln klassischen neuronalen Netzwerken, unterscheiden sich jedoch grundlegend: Klassische Netzwerke verarbeiten Daten wie Bilder oder Töne in fester Reihenfolge, während Graphen keine solche Ordnung besitzen. Sie sind flexibel, ohne klaren Anfang oder Endpunkt. GNNs lösen dieses Problem, indem sie jeden Knoten als eigenständiges Netzwerk behandeln, das Informationen von Nachbarn aufnimmt und die Graphenstruktur berücksichtigt. Anders als klassische Netzwerke nutzen Knoten in einem GNN eine gemeinsame Gewichtsmatrix. Diese geteilten Gewichte ermöglichen es dem Modell, universelle Muster zu lernen, die auf alle Knoten anwendbar sind, unabhängig von deren Position oder Rolle im Graphen. Diese Methode eignet sich besonders für Aufgaben wie die Betrugserkennung, bei denen dieselben Regeln, etwa für verdächtige Transaktionen, auf alle Knoten übertragbar sind.
 
-<img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="float: right; margin-left: 20px; width: 300px;">
+<img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="float: right; margin-left: 20px; width: 250px;">
 
 Das Bild zeigt links einen gerichteten Graphen und rechts die neuronalen Netzwerke für zwei Zielknoten: Node A (oben) und Node C (unten). 
 
@@ -301,10 +293,10 @@ Rechts: Verarbeitung in einem GNN. Hier sieht man, wie ein GNN die Informationen
 - Node A (oben): A erhält Informationen von B, C und D. Jeder Nachbarknoten wird einzeln transformiert (dunkelgraue Rechtecke). Danach aggregiert man die transformierten Daten (weisse Quadrate), um die Merkmale von A zu aktualisieren. 
 - Node C (unten): C erhält nur Informationen von D. Auch hier transformiert man die Nachbarattribute, aggregiert sie und aktualisiert die Merkmale von C.
 
-Im Detail läuft die Verarbeitung in einem GNN folgendermaßen: 
+Im Detail läuft die Verarbeitung in einem GNN folgendermassen: 
 
 **Schritt 1: Transformation der Nachbarn**: 
-Jeder Knoten sammelt Informationen aus seiner Umgebung. In unserem Beispiel erhält Knoten A Daten von B, C und D. Bevor diese Daten weiterfließen, transformiert man sie einzeln, um sie nützlicher zu machen. Eine Gewichtsmatrix (eine Art Filter) und eine Aktivierungsfunktion heben dabei wichtige Merkmale hervor. Im Bild symbolisieren die dunkelgrauen Rechtecke diesen Prozess. 
+Jeder Knoten sammelt Informationen aus seiner Umgebung. In unserem Beispiel erhält Knoten A Daten von B, C und D. Bevor diese Daten weiterfliessen, transformiert man sie einzeln, um sie nützlicher zu machen. Eine Gewichtsmatrix (eine Art Filter) und eine Aktivierungsfunktion heben dabei wichtige Merkmale hervor. Im Bild symbolisieren die dunkelgrauen Rechtecke diesen Prozess. 
 
 Beispiel: Jeder Nachbar enthält Informationen über eine Transaktion, etwa die Höhe des Betrags. 
 - Node B: Transaktionsbetrag = 100
@@ -322,7 +314,7 @@ Sobald die Nachbardaten umgewandelt sind, fassen wir sie zu einer einzigen Infor
 In unserem Beispiel könnte die Aggregation so aussehen:
 - Transformierte Beträge: B = 50, C = 100, D = 75
 - Aggregation (Summe): 50 + 100 + 75 = 225
-Im Bild zeigen die weißen Quadrate den Teil, der die Transformation darstellt.
+Im Bild zeigen die weissen Quadrate den Teil, der die Transformation darstellt.
 
 
 **Schritt 3: Aktualisierung des Zielknotens**
@@ -332,15 +324,86 @@ Beispiel: Node A hat ursprünglich den Wert 10. Nach der Aggregation der Nachbar
 
 
 #### GIN
+Das Graph Isomorphism Network (GIN) zielt darauf ab, die Leistungsfähigkeit des Weisfeiler-Lehman-Tests für Graph-Isomorphie zu erreichen. Dieser bewährte Algorithmus entscheidet, ob zwei Graphen strukturell identisch sind, und erkennt in neuen Daten verdächtige Muster, indem er subtile Unterschiede in Strukturen aufspürt. GIN verwendet eine robuste Summenaggregation statt Durchschnitts- oder Max-Pooling-Methoden und bezieht die Anzahl der Nachbarn direkt ein. So erkennt es feine Unterschiede in der Graphstruktur, was anderen Methoden oft misslingt. **Das Graph Convolutional Network (GCN)** etwa mittelt die Eigenschaften aller Knoten und gewichtet Nachbarinformationen gleichmässig, wodurch unterschiedliche Graphstrukturen ununterscheidbar werden können. Zwei Knoten mit verschieden vielen Nachbarn können ähnliche Merkmale zeigen, wenn ihre Durchschnittswerte gleich sind. Die **GraphSAGE-Methode** bietet Durchschnitt, Max-Pooling und LSTM-Pooling zur Auswahl, doch bleibt das Problem bestehen: Die Aggregation erfasst oft nicht die feinen Unterschiede zwischen Graphstrukturen. 
+
+Nach der Summenaggregation verarbeitet ein neuronales Netzwerk (Multi-Layer Perceptron, MLP) das Ergebnis weiter und hilft dem Modell, komplexe Beziehungen und Muster im Graphen zu lernen. 
+Ein weiterer Vorteil von GIN ist der Parameter ϵ, der die Gewichtung des Zielknotens gegenüber seinen Nachbarn flexibel steuert. So verhindert das Modell, dass alle Knoten zu ähnliche Repräsentationen erhalten, ein Problem, das als Over-Smoothing bekannt ist.
 
 
 #### GINEConv von PyTorch 
+In unserem Projekt verwenden wir das GINEConv-Layer aus der PyTorch-Geometric-Bibliothek, eine Weiterentwicklung des klassischen Graph Isomorphism Network (GIN). Anders als GIN berücksichtigt GINEConv nicht nur die Knotenmerkmale, sondern auch die Kanteninformationen, wie Beträge oder Währungen. Das macht es besonders geeignet für Aufgaben, bei denen die Verbindungen zwischen den Knoten entscheidend sind, etwa die Klassifikation von Kanten. Ein GIN-Modell würde in unserem Fall lediglich die Kontoeigenschaften analysieren, wie die Häufigkeit oder Höhe empfangener Transaktionen. GINEConv hingegen bezieht zusätzlich die Transaktionsmerkmale ein. So erkennt das Modell nicht nur die Anzahl der Transaktionen, sondern auch auffällige Beträge oder ungewöhnliche Verbindungen. Durch die Kombination von Knoten- und Kanteninformationen bietet GINEConv eine umfassendere Netzwerkanalyse und entdeckt verdächtige Muster, die rein knotenbasierte Modelle möglicherweise übersehen.
+
+##### GINe
+Unser GINe nutzt Edge-Updates und Batch-Normalisierung. Die **Edge-Updates** aktualisieren nicht nur die Knoteneigenschaften, sondern auch die Kantenattribute während des Trainings. Ein zusätzliches neuronales Netzwerk kombiniert dazu die Informationen von Quellknoten, Zielknoten und Kantenattributen. Das Ergebnis wird mit den ursprünglichen Kanteninformationen verrechnet, wodurch eine reichhaltigere Darstellung entsteht. Diese Funktion erweist sich als besonders wertvoll, wenn die Kantenattribute wichtige Zusatzinformationen liefern. Mit den Edge-Updates lernt das Modell, diese Kontextinformationen besser zu nutzen, was die Vorhersagequalität, etwa bei der Klassifikation von Transaktionen, deutlich steigert. 
+
+Zusätzlich normalisiert jede Schicht die Knoteneigenschaften mithilfe der **Batch-Normalisierung**. So bleiben die Werte in einem stabilen Bereich, was den Trainingsprozess beschleunigt und Überanpassung (Overfitting) verringert. In einem komplexen Netzwerk mit vielen Schichten und variierenden Eingabedaten sorgt die Batch-Normalisierung für eine robuste und konsistente Leistung.
+
+##### GINe2
+Das Modell GINe2 erweitert seinen Vorgänger GINe um mehrere konfigurierbare Optionen wie Dropout, Batch-Normalisierung und Edge-Updates, die sich manuell ein- oder ausschalten lassen. Diese Flexibilität macht das Modell vielseitiger und erlaubt es, gezielt auf unterschiedliche Anforderungen bei Graphdaten einzugehen. Die wichtigste Neuerung ist das **Dropout**: Es deaktiviert während des Trainings zufällig Neuronen, um Überanpassung (Overfitting) zu verhindern. 
+Ohne Dropout stuft das Modell etwa vor allem Transaktionen mit ungewöhnlich hohen Beträgen als verdächtig ein, da diese im Training oft als Betrug markiert wurden. Mit Dropout berücksichtigt es zusätzlich andere Merkmale wie die Anzahl der Transaktionen, die Währung oder die Verbindungsfrequenz zwischen bestimmten Konten. So erkennt es sowohl offensichtliche als auch versteckte Muster, etwa ein auffälliges Netzwerk kleiner, häufiger Zahlungen. Ist Dropout aktiviert, greift es sowohl bei der Verarbeitung der Kantenattribute als auch in den abschließenden Schichten des Modells.
+
+##### GINe3
+Das GINe3-Modell erweitert frühere Versionen durch zusätzliche **Pre- und Post-Processing-Schichten**, die die Knoteneigenschaften vor und nach der GNN-Verarbeitung gezielt verfeinern. 
+
+Die Pre-Processing-Schicht bereitet die Rohdaten der Knoten in mehreren Schritten auf: Lineare Transformationen, Aktivierungsfunktionen wie ReLU (Rectified Linear Unit), Batch-Normalisierung und optional Dropout bringen die Eingangsdaten in eine Form, die optimal für die GNN-Verarbeitung geeignet ist. So werden beispielsweise Transaktionsbeträge skaliert oder normalisiert, um extreme Ausreißer wie ungewöhnlich hohe Summen zu dämpfen und die Werte in einen einheitlichen Bereich zu überführen. Nach der GNN-Verarbeitung entstehen aggregierte Merkmale, die Informationen aus Knoten und Kanten kombinieren. 
+
+Im Post-Processing durchlaufen diese Merkmale weitere Schichten, um spezifische Muster zu erkennen. Stuft das Modell etwa ein Konto als "verdächtig" ein, weil es viele kleine Transaktionen empfängt, präzisiert das Post-Processing diese Einschätzung. Es berücksichtigt dabei Kontextinformationen wie die Häufigkeit ähnlicher Transaktionen oder die Bank der Absender.
+
 
 
 
 # Resultate
 
+
+
+
+
+
+
+
+
+
+
+
+
 # Outlook
+
+Um die Leistung des bestehenden Modells weiter zu steigern, könnten verschiedene Optimierungsschritte und Erweiterungen umgesetzt werden. Im alggemeinen könnt noch eine Feature Selection gemacht werden. Eine gezielte Auswahl der wichtigsten Features könnte die Komplexität des Modells verringern und die Generalisierung verbessern. Zudem: 
+
+ 
+
+Verbesserungen für LightGBM: 
+
+Scale_pos_weight Parameter: Durch die Anpassung dieses Parameters könnte das Ungleichgewicht der Klassen im Datensatz besser ausgeglichen werden, was insbesondere bei stark unausgeglichenen Datensätzen relevant ist. 
+
+Focal Loss als manuelle Verlustfunktion: Die Implementierung einer fokussierten Verlustfunktion wie der Focal Loss würde die Gewichtung schwer zu klassifizierender Samples verstärken, was die Performance bei unbalancierten Daten weiter verbessern könnte. 
+
+Erweiterungen des GIN-Modells: 
+
+Alternative GNN-Architekturen: Der Einsatz von PNA (Principal Neighbourhood Aggregation) oder anderen fortschrittlichen GNN-Modellen könnte die Repräsentationskraft des Netzwerks erhöhen. 
+
+Feature Engineering: 
+
+GFP-Features hinzufügen: Die Nutzung von Graph Fingerprints (GFP) könnte helfen, wiederkehrende Muster in der Graphstruktur zu identifizieren und die Trennbarkeit der Daten zu verbessern. 
+
+Erkenntnisse aus der EDA (Exploratory Data Analysis): Weitere explorative Datenanalysen könnten zusätzliche wertvolle Merkmale aufdecken, die für die Modellierung hilfreich sind. 
+
+Anpassungen der Zielvariable und Modellstrategie: Node Classification statt Edge Classification: Die Umstellung auf Node Classification anstelle der aktuell genutzten Edge Classification könnte helfen, den Graphen anders zu repräsentieren und bessere Ergebnisse zu erzielen. Der Code dafür ist bereits vorhanden, wurde jedoch aus Zeitgründen nicht weiter analysiert. 
+
+Sampling-Methoden: Sampling-Methoden auf GIN anwenden: Die Anwendung von Sampling-Methoden wie SMOTE oder Random Undersampling könnte auch im GIN-Ansatz die Performance verbessern. Erste Tests mit XGBoost zeigten, dass dies signifikant helfen kann. 
+
+Fazit: Durch eine Kombination aus verbesserten Algorithmen, gezieltem Feature Engineering und Sampling-Methoden könnte die Modellperformance weiter optimiert werden. Insbesondere der Einsatz alternativer GNN-Modelle und die Anpassung der Modellarchitektur könnten das Potenzial zur Klassifikation weiter ausschöpfen. 
+
+
+
+
+
+
+
+
+
+
+
 
 # Quellen
 
