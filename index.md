@@ -271,7 +271,7 @@ Abschliessend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwisc
 
 
 ### Die Modelle detailliert
-
+Hallo
 
 #### Graph Feature Preprocessor (GFP)
 Die beschriebene Graphstruktur bildet das Fundament des GFP. Er extrahiert graphbasierte Merkmale, die ein Modell nutzen kann. 
