@@ -44,10 +44,10 @@ Im Kampf gegen Geldwäsche ist es auch entscheidend, typische Muster in Transakt
 <img src="assets/cycle.png" alt="cycle" class="hover-zoom" style="float: left; margin-right: 20px; width: 100px;">
 Das Simple Cycles-Muster beschreibt eine geschlossene Kette von Transaktionen, bei der Gelder innerhalb eines festen Kontenkreises zirkulieren. Diese Strategie zielt darauf ab, die ursprüngliche Herkunft der Gelder durch mehrfache Überweisungen zu verschleiern. 
 
-> Beispiel: 
-> - Konto A überweist Geld an Konto B.  
-> - Konto B überweist einen Teil oder den gesamten Betrag an Konto C.  
-> - Konto C überweist schliesslich das Geld zurück an Konto A.  
+Beispiel: 
+- Konto A überweist Geld an Konto B.  
+- Konto B überweist einen Teil oder den gesamten Betrag an Konto C.  
+- Konto C überweist schliesslich das Geld zurück an Konto A.  
 
 Dieses Verhalten zeigt sich oft in der Layering-Phase der Geldwäsche, wenn man Gelder durch verschiedene Konten schleust, um die Spur zu verwischen. Simple Cycles wirken zunächst legitim, doch ihre wiederholte Struktur und der fehlende wirtschaftliche Zweck entlarven sie. In den zuvor vorgestellten Modellen gelten sie als besonders schwer erkennbar, vor allem bei mehr als sechs beteiligten Konten. 
 
@@ -60,17 +60,16 @@ Ein weiteres verbreitetes Muster ist die Scatter-Gather-Struktur, die oft in der
 **Gather:** Die Gelder fliessen anschliessend von diesen Empfängerkonten zurück auf ein oder mehrere zentrale Konten.
 <img src="assets/gather-scatter.png" alt="scatter-gather" class="hover-zoom" style="display: block; margin: 10px 0; width: 100px;">
 
-> Beispiel: 
-> - Konto A überweist Gelder an die Konten B, C und D (Scatter).  
-> - Konten B, C und D leiten diese Gelder zurück an Konto E (Gather).  
+Beispiel: 
+- Konto A überweist Gelder an die Konten B, C und D (Scatter).  
+- Konten B, C und D leiten diese Gelder zurück an Konto E (Gather).  
 
 Diese Struktur verschleiert die Geldspur durch Streuung und spätere Zusammenführung. Scatter-Gather-Muster sind oft hochgradig organisiert und schwer zu erkennen, da ähnliche Verhaltensweisen auch in legitimen Transaktionsnetzen vorkommen können.  
 
 
 # Herausforderung und Evaluierung von Modellen 
-Zunächst müssen wir verstehen, welche Herausforderungen Machine-Learning-Modelle bewältigen und wie wir ihre Leistung messen. In der Welt des maschinellen Lernens begegnen wir oft Datensätzen mit unausgewogener Klassenverteilung. Das bedeutet, eine Klasse – etwa betrügerische Transaktionen – tritt deutlich seltener auf als die andere, wie legitime Transaktionen. Diese seltene Klasse nennen wir Minority-Class (Minderheitsklasse).
-
-Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herkömmliche Metriken wie die Genauigkeit (Accuracy) oft in die Irre führen. Ein Modell könnte etwa 99 % Genauigkeit erzielen, indem es stets die Mehrheitsklasse (legitime Transaktionen) vorhersagt, dabei jedoch keine betrügerischen Transaktionen erkennt. Hier greift der Minority-Class F1-Score ein. Der F1-Score balanciert Präzision und Recall aus. Diese beiden Masse sind entscheidend, um die Leistung eines Modells bei der Erkennung der Minderheitsklasse zu bewerten. 
+Zunächst müssen wir verstehen, welche Herausforderungen Machine-Learning-Modelle bewältigen und wie wir ihre Leistung messen. In der Welt des maschinellen Lernens begegnen wir oft Datensätzen mit unausgewogener Klassenverteilung. Das bedeutet, eine Klasse – etwa betrügerische Transaktionen – tritt deutlich seltener auf als die andere, wie legitime Transaktionen. Diese seltene Klasse heisst Minority-Class (Minderheitsklasse).
+Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herkömmliche Metriken wie die Genauigkeit (Accuracy) oft in die Irre führen. Ein Modell könnte etwa 99 % Genauigkeit erzielen, indem es stets die Mehrheitsklasse (legitime Transaktionen) vorhersagt, dabei jedoch keine betrügerischen Transaktionen erkennt. Hier greift der Minority-Class F1-Score ein. Der F1-Score balanciert Präzision und Recall aus. Diese beiden Masse sind entscheidend, um die Leistung eines Modells bei der Erkennung der Minderheitsklasse zu bewerten.
 
 **Präzision** gibt an, wie viele der als betrügerisch eingestuften Transaktionen tatsächlich betrügerisch sind. 
 
@@ -151,15 +150,15 @@ Vashistha et al. entwickelten das **Hyper Ensemble Machine Learning (HEML)**, da
 
 
 # Unsere Modelle 
-In unserem Projekt verfolgten wir zwei Ansätze, um Geldwäsche in einem unausgewogenen Datensatz aufzuspüren: nicht graph-basierte und graph-basierte Modelle. 
+In unserem Projekt verfolgen wir zwei Ansätze, um Geldwäsche in einem unausgewogenen Datensatz aufzuspüren: nicht graph-basierte und graph-basierte Modelle. 
 
 <img src="assets/modellübersicht.png" alt="modellübersicht" class="hover-zoom" style="display: block; margin: 10px 0; width: 300px;">
 
 
 ## Nicht graph-basiert
-Nicht graph-basierte Modelle analysieren Transaktionen isoliert. Sie ignorieren die Beziehungen zwischen Sender- und Empfängerkonten und konzentrieren sich stattdessen auf Transaktionsmerkmale wie Betrag, Währung oder Zahlungsformat. Diese Methode eignet sich, wenn die Datenstruktur keine klaren Verbindungen zeigt oder eine schnelle, skalierbare Analyse nötig ist. Sie versagt jedoch bei der Erkennung komplexer Netzwerke oder Abhängigkeiten. In unserem Fall erwarteten wir deshalb eine schlechte Modellleistung. 
+Nicht graph-basierte Modelle analysieren Transaktionen isoliert. Sie ignorieren die Beziehungen zwischen Sender- und Empfängerkonten und konzentrieren sich stattdessen auf Transaktionsmerkmale wie Betrag, Währung oder Zahlungsformat. Diese Methode eignet sich, wenn die Datenstruktur keine klaren Verbindungen zeigt oder eine schnelle, skalierbare Analyse nötig ist. Sie versagt jedoch bei der Erkennung komplexer Netzwerke oder Abhängigkeiten. In unserem Fall erwarten wir deshalb eine schlechte Modellleistung. 
 
-Für den nicht graph-basierten Ansatz nutzten wir Gradient Boosted Trees (GBT). Diese Methode kombiniert viele einfache Entscheidungsbäume, um Vorhersagen zu verbessern. Entscheidungsbäume teilen Daten durch Ja/Nein-Fragen in Kategorien. 
+Für den nicht graph-basierten Ansatz nutzen wir Gradient Boosted Trees (GBT). Diese Methode kombiniert viele einfache Entscheidungsbäume, um Vorhersagen zu verbessern. Entscheidungsbäume teilen Daten durch Ja/Nein-Fragen in Kategorien. 
 
 > Ein Beispiel: Wir wollen prüfen, ob eine Transaktion betrügerisch ist. Die Daten: 
 > - Betrag: 15.000 USD 
@@ -181,11 +180,11 @@ Um maschinelle Lernmodelle zu entwickeln, teilen wir den Datensatz in Trainings-
 - 20% Validierungsdaten: Diese optimieren das Modell, etwa durch Justieren von Hyperparametern. 
 - 20% Testdaten: Sie prüfen, wie gut das Modell in einem unabhängigen Szenario tatsächlich abschneidet. 
 
-In unserem Projekt folgten wir dieser Empfehlung. Der IBM-AML-Datensatz umfasst Transaktionen über 17 Tage. Wir wendeten den Split jedoch nur auf die ersten 10 Tage an. Diese Entscheidung stützt sich auf Erkenntnisse aus der [Kaggle Diskussion)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml/discussion/427517). Dort wird betont, dass die letzten 7 Tage des Datensatzes gezielt für Szenarien mit mehr Geldwäsche-Transaktionen synthetisch erstellt wurden. Diese künstliche Verzerrung könnte die Modellleistung unrealistisch beeinflussen, da es auf überrepräsentierte Daten abgestimmt würde, die in der Realität selten sind. Neben der zeitlichen Aufteilung untersuchten wir auch die Verteilung der Geldwäsche-Muster im Datensatz. Unser Ziel war, sicherzustellen, dass die Muster im Training, in der Validierung und im Test ähnlich verteilt sind, damit das Modell keine Muster "überlernt". 
+In unserem Projekt folgen wir dieser Empfehlung. Der IBM-AML-Datensatz umfasst Transaktionen über 17 Tage. Wir wendeten den Split jedoch nur auf die ersten 10 Tage an. Diese Entscheidung stützt sich auf Erkenntnisse aus der [Kaggle Diskussion)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml/discussion/427517). Dort wird betont, dass die letzten 7 Tage des Datensatzes gezielt für Szenarien mit mehr Geldwäsche-Transaktionen synthetisch erstellt wurden. Diese künstliche Verzerrung könnte die Modellleistung unrealistisch beeinflussen, da es auf überrepräsentierte Daten abgestimmt würde, die in der Realität selten sind. Neben der zeitlichen Aufteilung untersuchen wir auch die Verteilung der Geldwäsche-Muster im Datensatz. Unser Ziel ist, sicherzustellen, dass die Muster im Training, in der Validierung und im Test ähnlich verteilt sind, damit das Modell keine Muster "überlernt". 
 
 
 ### Die Modelle detailliert
-Wir implementierten zwei Varianten von Gradient Boost Modellen:  
+Wir implementieren zwei Varianten von Gradient Boost Modellen:  
 - XGBoost (Extreme Gradient Boosting) 
 - LightGBM (Light Gradient Boosting Machine) 
 
@@ -193,7 +192,7 @@ Wir implementierten zwei Varianten von Gradient Boost Modellen:
 
 XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
 
-> Wieder unser Beispiel: Betrachten wir wieder die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
+> Wieder unser Beispiel: Betrachten wir die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
 > Klassengewichtung könnte das Modell alle Transaktionen als "legitim" einstufen und dennoch 98 % Genauigkeit erreichen. Das
 > wäre nutzlos, da keine betrügerische Transaktion erkannt würde. Um dies zu verhindern, geben wir der Klasse "betrügerisch"
 > eine höhere Gewichtung, etwa den Faktor 49, basierend auf dem Verhältnis von legitimen zu betrügerischen Transaktionen. So
@@ -220,7 +219,7 @@ LightGBM passt zudem automatisch die Gewichtung der Klassen an, indem es den Ant
 
 
 ### Sampling
-Um das Problem unausgewogener Klassenverteilung zu lösen, haben wir verschiedene Sampling-Methoden eingesetzt: 
+Um das Problem unausgewogener Klassenverteilung zu lösen, setzen wir verschiedene Sampling-Methoden ein: 
 
 Beim **Undersampling** reduzieren wir die Grösse der Mehrheitsklasse, indem wir zufällig eine Teilmenge auswählen. So gleichen wir den Datensatz aus. Im Beispiel mit 49 legitimen und 1 betrügerischen Transaktion würde das bedeuten, dass wir nach dem Undersampling je 1 legitime und 1 betrügerische Transaktion haben. Dabei entfernen wir viele Datenpunkte, was das Risiko birgt, wichtige Informationen der Mehrheitsklasse zu verlieren. 
 
@@ -255,17 +254,17 @@ Graphen sind mathematische Strukturen, die aus Knoten (Nodes) und Kanten (Edges)
 > Beispiel: Ein ungerichteter Graph zeigt eine soziale Verbindung, etwa Freundschaften, während ein gerichteter Graph Transaktionen oder Flüsse zwischen Konten darstellt.
 
 <img src="assets/graph.png" alt="graph" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
-In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung haben wir ein gerichtetes Multigraph-Modell gewählt. In diesem Modell repräsentieren die Knoten Bankkonten, während die Kanten Transaktionen zwischen diesen Konten darstellen. Da zwischen zwei Konten mehrere Transaktionen stattfinden können, eignet sich ein Multigraph hervorragend, um diese Dynamik zu modellieren. Die Kanten unseres Graphen sind dabei nicht nur einfache Verbindungen, sondern tragen zusätzliche Informationen in Form von Attributen. Dazu gehören der Betrag der Transaktion in Original- und USD-Währung, die verwendete Währung, das Zahlungsformat und ein Indikator, ob die Transaktion verdächtig ist oder nicht. 
+In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung wählen wir ein gerichtetes Multigraph-Modell. In diesem Modell repräsentieren die Knoten Bankkonten, während die Kanten Transaktionen zwischen diesen Konten darstellen. Da zwischen zwei Konten mehrere Transaktionen stattfinden können, eignet sich ein Multigraph hervorragend, um diese Dynamik zu modellieren. Die Kanten unseres Graphen sind dabei nicht nur einfache Verbindungen, sondern tragen zusätzliche Informationen in Form von Attributen. Dazu gehören der Betrag der Transaktion in Original- und USD-Währung, die verwendete Währung, das Zahlungsformat und ein Indikator, ob die Transaktion verdächtig ist oder nicht. 
 
 
 ### Data-Split
 <img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
-Um die Daten optimal für Training und Evaluierung zu trennen, wählten wir einen Community Split. Dieser Ansatz sorgt für eine vollständige Trennung der Datensätze und verhindert jeglichen Informationsaustausch zwischen ihnen. So vermeiden wir effektiv Data Leakage – das ungewollte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten. Zunächst wandelten wir die tabellarischen Daten, wie im vorherigen Kapitel beschrieben, in einen Graphen um. Anschliessend identifizierten wir die grösste Weakly Connected Component (WCC), also den grössten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. Dadurch bleibt der Graph konsistent und zusammenhängend. In unserem Fall umfasst die WCC 371'917 Konten und 1'496'497 Transaktionen – das sind 72 % aller Konten, aber nur 29 % der Transaktionen. Der Grund dafür liegt vermutlich darin, dass viele Konten laut unserer Analyse nur eine oder zwei Transaktionen ausführen oder empfangen.
+Um die Daten optimal für Training und Evaluierung zu trennen, wählen wir einen Community Split. Dieser Ansatz sorgt für eine vollständige Trennung der Datensätze und verhindert jeglichen Informationsaustausch zwischen ihnen. So vermeiden wir effektiv Data Leakage – das ungewollte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten. Zunächst wandelten wir die tabellarischen Daten, wie im vorherigen Kapitel beschrieben, in einen Graphen um. Anschliessend identifizierten wir die grösste Weakly Connected Component (WCC), also den grössten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. Dadurch bleibt der Graph konsistent und zusammenhängend. In unserem Fall umfasst die WCC 371'917 Konten und 1'496'497 Transaktionen – das sind 72 % aller Konten, aber nur 29 % der Transaktionen. Der Grund dafür liegt vermutlich darin, dass viele Konten laut unserer Analyse nur eine oder zwei Transaktionen ausführen oder empfangen.
 
-Im nächsten Schritt teilten wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in grossen Netzwerken, indem er iterativ die Modularity maximiert – ein Mass für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
+Im nächsten Schritt teilen wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in grossen Netzwerken, indem er iterativ die Modularity maximiert – ein Mass für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
 <img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 400px;">
 
-Um die beste Community-Einteilung zu erreichen, evaluierten wir in einer Schleife mehrere Varianten. Unser Ziel dabei ist es, die Anzahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) zu minimieren und gleichzeitig sicherzustellen, dass die Knotenverteilung in den Splits dem Verhältnis von 60% Training, 20% Validierung und 20% Test entspricht. Dieses Vorgehen ost entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. 
+Um die beste Community-Einteilung zu erreichen, evaluieren wir in einer Schleife mehrere Varianten. Unser Ziel dabei ist es, die Anzahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) zu minimieren und gleichzeitig sicherzustellen, dass die Knotenverteilung in den Splits dem Verhältnis von 60% Training, 20% Validierung und 20% Test entspricht. Dieses Vorgehen ist entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. 
 
 Abschliessend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwischen Knoten desselben Splits existieren. So bleibt die Trennung der Daten gewährleistet und die Integrität der Community-Struktur erhalten.
 
