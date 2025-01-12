@@ -362,11 +362,11 @@ Die Grafik fasst die Ergebnisse der besten Modelle übersichtlich zusammen. Alle
 
 ## Nicht graph-basierte Modelle
 
-<img src="assets/resultate_nichtgraphbasiert.png" alt="resultate_nichtgraphbasiert" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
+<img src="assets/resultate_nichtgraphbasiert.png" alt="resultate_nichtgraphbasiert" class="hover-zoom" style="float: right; margin-left: 20px; width: 150px;">
 
 Die nicht-grafischen Modelle erreichen F1-Scores bis zu 0.56. Besonders XGBoost sticht hervor, da es oft über 0.5 liegt – ein Zeichen, dass das Modell tatsächlich lernt. Mit der Sampling-Methode SMOTE, den Originalmerkmalen und den manuell entwickelten Merkmalen, basierend auf den EDA-Erkenntnissen, erzielten wir das beste Ergebnis.
 
-<img src="assets/cf_ngb.png" alt="gnn" class="cf_ngb" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
+<img src="assets/cf_ngb.png" alt="gnn" class="cf_ngb" class="hover-zoom" style="float: left; margin-right: 20px; width: 100px;">
 
 Die Grafik präsentiert die Confusion Matrix des besten Modells, XGBoost mit SMOTE. Durch das Sampling entstanden viele zusätzliche betrügerische Transaktionen. Das Modell stuft etwa 28'455 legale Transaktionen fälschlicherweise als betrügerisch ein, während es 985'593 betrügerische Transaktionen übersieht und als legal einordnet.
 
