@@ -5,17 +5,17 @@ layout: default
 ![Banner](assets/banner.png)
 
 
-Dieser Blogbeitrag zeigt, wie man Geldwäscheversuche mit Machine Learning erkennt. Wir präsentieren verschiedene Ansätze und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die Entwicklung von klassischen Machine-Learning-Algorithmen bis hin zu innovativen Graph Neural Networks zu erklären. Mit der Länge des Artikels wächst die Komplexität. Der Beitrag richtet sich an Leser, die ein Faible für Daten oder Statistik haben und mit dem Begriff "Modell" vertraut sind.
+Dieser Blogbeitrag zeigt, wie man Geldwäscheversuche mit Machine Learning erkennt. Wir präsentieren im Detail verschiedene Ansätze und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die Entwicklung von klassischen Machine-Learning-Algorithmen bis hin zu innovativen Graph Neural Networks zu erklären. Mit der Länge des Artikels wächst die Komplexität. Der Beitrag richtet sich an Leser, die ein Faible für Daten oder Statistik haben und mit dem Begriff "Modell" vertraut sind.
 
 Laut den Vereinten Nationen werden jährlich 2 bis 5 % des globalen BIP – etwa 800 Milliarden bis 2 Billionen US-Dollar – durch Geldwäsche verschleiert. Ein wiederkehrendes Problem in der Geldwäsche-Forschung ist die Verfügbarkeit realer Datensätze. Das AMLworld-Framework bietet hier eine Lösung, indem es synthetische Finanztransaktionen generiert, die reale Szenarien mit hoher Präzision nachbilden, einschliesslich bekannter Geldwäschemuster. Diese vollständig gelabelten Daten ermöglichen eine objektive Bewertung von Algorithmen (Altman et al., 2024). Grundlage des AMLworld-Frameworks ist der synthetische Datensatz [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml), mit dem auch wir in unserem Projekt arbeiteten und den wir im nächsten Kapitel vorstellen. 
 
 
 # Die Daten
-Der Datensatz umfasst 5'078'345 Transaktionen und 11 Variablen. Er beschreibt Transaktionen zwischen Banken und Konten, einschliesslich Zeitstempeln, Beträgen, Währungen, Zahlungsformaten und Labels, die Transaktionen als legal oder Geldwäsche kennzeichnen. 
-Die Transaktionen erstrecken sich über 17 Tage ab dem 1. September 2022. Die meisten Daten stammen aus den ersten 10 Tagen, während die restlichen Tage weniger Aktivität zeigen. Auffällig ist das starke Ungleichgewicht: 99,9 % der Transaktionen sind legal, nur 0,1 % gelten als Geldwäsche.  
+Der Datensatz umfasst 5'073'168 Transaktionen und 11 Variablen. Er beschreibt Transaktionen zwischen Banken und Konten, einschliesslich Zeitstempeln, Beträgen, Währungen, Zahlungsformaten und Labels, die Transaktionen als legal oder Geldwäsche kennzeichnen. 
+Die Transaktionen erstrecken sich über 17 Tage ab dem 1. September 2022. Die meisten Daten stammen aus den ersten 10 Tagen, während die restlichen Tage weniger Aktivität zeigen. Auffällig ist das starke Ungleichgewicht: 99,9% der Transaktionen sind legal, nur 0,1% (5177) gelten als Geldwäsche. 
 <img src="assets/eda_tage.png" alt="eda_tage" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
-Der Datensatz umfasst 30'470 Banken und 515'080 Konten. Eine kleine Anzahl von Banken und Konten wickelt den Grossteil der Transaktionen ab: Die 10 aktivsten Banken verantworten 18,1 % aller Transaktionen. Bei den Konten gibt es zentrale Akteure, von denen einige über 100.000 Transaktionen ausführen, während viele andere nur ein- oder zweimal aktiv sind. 
+Der Datensatz umfasst 30'470 Banken und 515'080 Konten. Eine kleine Anzahl von Banken und Konten wickelt den Grossteil der Transaktionen ab: Die 10 aktivsten Banken verantworten 18,1% aller Transaktionen. Bei den Konten gibt es zentrale Akteure, von denen einige über 100.000 Transaktionen ausführen, während viele andere nur ein- oder zweimal aktiv sind. 
 <img src="assets/eda_top30banken.png" alt="eda_top30banken" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
 Die Transaktionsbeträge, sowohl ein- als auch ausgehend, variieren stark. Meistens handelt es sich um kleine Beträge, doch einige extrem hohe Summen (bis zu 1 Billion USD) verzerren den Durchschnitt. Zur besseren Analyse wurden die Beträge in US-Dollar umgerechnet. 
@@ -259,14 +259,15 @@ In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung wählen wir ein
 
 ### Data-Split
 <img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
-Um die Daten optimal für Training und Evaluierung zu trennen, wählen wir einen Community Split. Dieser Ansatz sorgt für eine vollständige Trennung der Datensätze und verhindert jeglichen Informationsaustausch zwischen ihnen. So vermeiden wir effektiv Data Leakage – das ungewollte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten. Zunächst wandelten wir die tabellarischen Daten, wie im vorherigen Kapitel beschrieben, in einen Graphen um. Anschliessend identifizierten wir die grösste Weakly Connected Component (WCC), also den grössten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. Dadurch bleibt der Graph konsistent und zusammenhängend. In unserem Fall umfasst die WCC 371'917 Konten und 1'496'497 Transaktionen – das sind 72 % aller Konten, aber nur 29 % der Transaktionen. Der Grund dafür liegt vermutlich darin, dass viele Konten laut unserer Analyse nur eine oder zwei Transaktionen ausführen oder empfangen.
+Um die Daten sauber für Training und Evaluierung zu trennen, nutzen wir einen Community Split. Dieser Ansatz stellt sicher, dass die Datensätze vollständig getrennt bleiben und keine Informationen zwischen ihnen fließen. So verhindern wir effektiv Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten. Zunächst wandelten wir die tabellarischen Daten, wie im vorherigen Kapitel beschrieben, in einen Graphen um. Danach bestimmten wir die größte Weakly Connected Component (WCC), also den größten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. Dadurch bleibt der Graph konsistent und zusammenhängend. In unserem Fall umfasst die WCC 371'917 Konten und 1'496'497 Transaktionen – das entspricht 72% aller Konten, aber nur 29% der Transaktionen. Vermutlich liegt das daran, dass viele Konten laut unserer Analyse nur eine oder zwei Transaktionen tätigen oder empfangen. Der Anteil betrügerischer Transaktionen im WCC beträgt 0.66% statt nur 0.1%.
 
 Im nächsten Schritt teilen wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in grossen Netzwerken, indem er iterativ die Modularity maximiert – ein Mass für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
 <img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 400px;">
 
-Um die beste Community-Einteilung zu erreichen, evaluieren wir in einer Schleife mehrere Varianten. Unser Ziel dabei ist es, die Anzahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) zu minimieren und gleichzeitig sicherzustellen, dass die Knotenverteilung in den Splits dem Verhältnis von 60% Training, 20% Validierung und 20% Test entspricht. Dieses Vorgehen ist entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. 
+Um die beste Community-Einteilung zu erreichen, prüfen wir in einer Schleife mehrere Varianten. Wir wollen die Zahl der durchtrennten Fraud-Kanten (betrügerische Transaktionen) minimieren und gleichzeitig die Knotenverteilung in den Splits im Verhältnis von 60% Training, 20% Validierung und 20% Test halten. Dieses Vorgehen ist entscheidend, um die Balance zwischen realistischen Szenarien und statistischer Robustheit zu wahren. Im Trainingsset liegt der Anteil betrügerischer Transaktionen bei 0.71%, wodurch er im Validierungs- und Testset auf 0.13% sinkt.
 
 Abschliessend übernehmen wir nur die Kanten in die jeweiligen Splits, die zwischen Knoten desselben Splits existieren. So bleibt die Trennung der Daten gewährleistet und die Integrität der Community-Struktur erhalten.
+
 
 ### Die Modelle detailliert
 
@@ -275,6 +276,8 @@ Die beschriebene Graphstruktur bildet das Fundament des GFP. Er extrahiert graph
 Ein entscheidender Vorteil des GFP ist seine Fähigkeit, dynamische Graphen zu verwalten. Da Transaktionen nur zeitweise relevant sind, arbeitet der GFP mit einem gleitenden Zeitfenster: Er fügt neue Transaktionen hinzu und entfernt veraltete Daten. So bleibt der Graph übersichtlich und spiegelt stets den aktuellen Zustand des Transaktionsnetzwerks wider. Ein weiteres Kernelement des GFP ist seine Fähigkeit, typische Muster wie Zyklen oder Scatter-Gather-Strukturen in Transaktionsnetzwerken zu erkennen. Der GFP übersetzt diese Muster in numerische Merkmale, die er in das Datenset integriert. Diese Merkmale bereichern die Daten und liefern maschinellen Lernmodellen zusätzliche Informationen für fundierte Entscheidungen. 
 
 > Beispiel aus unserem Anwendungsfall: Ein Konto führt mehrere Transaktionen durch, die einen Zyklus bilden, etwa A → B → C → A. Der GFP erkennt dieses Muster und berechnet die Anzahl der Zyklen, an denen Konto A beteiligt ist. Diese Information fügt er dem Datenset hinzu, damit ein maschinelles Lernmodell besser einschätzen kann, ob dieses Konto verdächtig ist.
+
+Wir nutzen die GFP-Daten unbalanciert und wenden die vier oben beschriebenen Sampling-Methoden an.
 
 
 #### GNN allgemein
@@ -361,7 +364,11 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 <img src="assets/resultate_nichtgraphbasiert.png" alt="resultate_nichtgraphbasiert" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
+
+<img src="assets/resultate_GFP.png" alt="resultate_GFP" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
 
 
@@ -369,16 +376,28 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 ### GFP
 
-<img src="assets/resultate_GFP.png" alt="gnn" class="resultate_GFP" style="float: left; margin-right: 20px; width: 250px;">
+<img src="assets/resultate_GFP.png" alt="resultate_GFP" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+<img src="assets/cf_lightgbm_sampling.png" alt="cf_lightgbm_sampling" class="hover-zoom" style="display: block; margin: 10px 0; width: 300px;">
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+<img src="assets/cf_xgboost_sampling.png" alt="cf_xgboost_sampling" class="hover-zoom" style="display: block; margin: 10px 0; width: 300px;">
+
+ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
 
 ### GINe
 
-<img src="assets/resultate_GNN.png" alt="gnn" class="resultate_GNN" style="float: right; margin-left: 20px; width: 250px;">
+<img src="assets/resultate_GNN.png" alt="resultate_GNN" class="resultate_GNN" style="float: right; margin-left: 20px; width: 250px;">
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
+
+<img src="assets/cf_lightgbm_sampling.png" alt="cf_lightgbm_sampling" class="hover-zoom" style="display: block; margin: 10px 0; width: 300px;">
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
 
 
@@ -428,3 +447,4 @@ Liu, Z., Dou, Y., Yu, P. S., Deng, Y., & Peng, H. (2020). *Alleviating the Incon
 Sinayobye, J. O., Kiwanuka, F., & Kaawaase Kyanda, S. (2018). *A State-of-the-Art Review of Machine Learning Techniques for Fraud Detection Research.* SEIA 2018. [https://doi.org/10.1145/3195528.3195534](https://doi.org/10.1145/3195528.3195534) 
 
 Vashistha, A., & Tiwari, A. K. (2024). *Building Resilience in Banking Against Fraud with Hyper Ensemble Machine Learning and Anomaly Detection Strategies.* SN Computer Science, 5(556). [https://doi.org/10.1007/s42979-024-02854-w](https://doi.org/10.1007/s42979-024-02854-w)
+
