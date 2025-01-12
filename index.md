@@ -413,7 +413,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 # Outlook
 
-Unsere Arbeit stellt eine Grundlage dar, um erste Berührungen mit graph-basierten Ansätzen zu schaffen. Als Basisarbeit bietet sie  Einblicke in die Stärken und Herausforderungen solcher Ansätze, doch gleichzeitig erkennen wir, dass unsere Modelle noch nicht annähernd an die konzeptionellen Überlegungn und Komplexitätder in der Literatur vorgestellten Methoden heranreichen. Hierfür hätten wir unser Konzept nochmal überarbeiten müssen. Hierfür wäre auch die frühzeitige Planung und Sicherstellung ausreichender Rechenressourcen. Die graph-basierten Ansätze GFP und GNN erfordern erhebliche Rechenkapazitäten. Wir wollten etwa die mit dem GFP generierten Features auch noch mit einem GINe-Modell trainieren und entschieden, dass dies in dieser Konstellation nciht möglich ist, da bereits XGBoost und LightGBM zur totalen Auslastung des Servers führte. 
+Unsere Arbeit stellt eine Grundlage dar, um erste Berührungen mit graph-basierten Ansätzen zu schaffen. Als Basisarbeit bietet sie  Einblicke in die Stärken und Herausforderungen solcher Ansätze, doch gleichzeitig erkennen wir, dass unsere Modelle noch nicht annähernd an die konzeptionellen Überlegungn und Komplexitätder in der Literatur vorgestellten Methoden heranreichen. Hierfür hätten wir unser Konzept nochmal überarbeiten müssen. Hierfür wäre auch die frühzeitige Planung und Sicherstellung ausreichender Rechenressourcen. Die graph-basierten Ansätze GFP und GNN erfordern erhebliche Rechenkapazitäten. Wir wollten etwa die mit dem GFP generierten Features auch noch mit einem GINe-Modell trainieren und entschieden, dass dies in dieser Konstellation nicht möglich ist, da bereits XGBoost und LightGBM zur totalen Auslastung des Servers führte. 
 
 Ein zentraler Faktor, der den Fortschritt unseres Projekts beeinflusst hat, war der Aufwand für das technische Setup. Besonders der Einsatz des Graph Preprocessors von SnapML stellte uns vor eine Herausforderung. Die fehlende Kompabilität für Windows und moderne Apple-Architekturen, verlangten die Einrichtung einer Multi-Linux-Umgebung in Docker. Viel Zeit ging hier für die Konfiguration und Fehlerbehebung verloren, die wir besser in die Modellentwicklung hätten investieren können.
 
@@ -428,6 +428,7 @@ LightGBM:
 - Benutzerdefinierte Verlustfunktion: Implementieren Sie eine fokussierte Verlustfunktion wie Focal Loss, um schwer zu klassifizierende Instanzen stärker zu gewichten und die Modellleistung bei unbalancierten Daten zu erhöhen. 
 
 GINe: 
+- Führe ein breiteres Hyperparameter-Tuning durch. Diese Anpassung, deren Code bereits existiert, wurde aus Zeitgründen bisher nicht weiter untersucht. 
 - Fortschrittliche Aggregationsmethoden: Nutzen Sie moderne Modelle wie PNA (Principal Neighbourhood Aggregation), um die Fähigkeit des Netzwerks zu verbessern, komplexe Graphstrukturen darzustellen. 
 - Integration von GFP-Features: Verwenden Sie Graph Fingerprints (GFP), um wiederkehrende Muster in der Graphstruktur zu erkennen und die Trennschärfe des Modells zu steigern. 
 - Wechsel der Zielvariable: Stellen Sie von Edge Classification auf Node Classification um, um eine alternative Perspektive auf den Graphen zu gewinnen. Diese Anpassung, deren Code bereits existiert, wurde aus Zeitgründen bisher nicht weiter untersucht. 
