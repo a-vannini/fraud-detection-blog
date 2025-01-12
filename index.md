@@ -279,7 +279,7 @@ Ein entscheidender Vorteil des GFP ist seine Fähigkeit, dynamische Graphen zu v
 
 Wir nutzen die GFP-Daten unbalanciert und wenden die vier oben beschriebenen Sampling-Methoden an.
 
-#### GNN allgemein
+#### Graph-basierte neuronale Netzwerke (GNNs) allgemein
 
 Graph-basierte neuronale Netzwerke (GNNs) ähneln klassischen neuronalen Netzwerken, unterscheiden sich jedoch grundlegend: Klassische Netzwerke verarbeiten Daten wie Bilder oder Töne in fester Reihenfolge, während Graphen keine solche Ordnung besitzen. Sie sind flexibel, ohne klaren Anfang oder Endpunkt. GNNs lösen dieses Problem, indem sie jeden Knoten als eigenständiges Netzwerk behandeln, das Informationen von Nachbarn aufnimmt und die Graphenstruktur berücksichtigt. Anders als klassische Netzwerke nutzen Knoten in einem GNN eine gemeinsame Gewichtsmatrix. Diese geteilten Gewichte ermöglichen es dem Modell, universelle Muster zu lernen, die auf alle Knoten anwendbar sind, unabhängig von deren Position oder Rolle im Graphen. Diese Methode eignet sich besonders für Aufgaben wie die Betrugserkennung, bei denen dieselben Regeln, etwa für verdächtige Transaktionen, auf alle Knoten übertragbar sind.
 
@@ -323,7 +323,8 @@ Nach der Aggregation aktualisiert das GNN die Merkmale des Zielknotens. Es kombi
 Beispiel: Node A hat ursprünglich den Wert 10. Nach der Aggregation der Nachbardaten (225) erhält A den neuen Wert 235.
 
 
-#### GIN
+#### Graph Isomorphism Network (GIN)
+
 Das Graph Isomorphism Network (GIN) zielt darauf ab, die Leistungsfähigkeit des Weisfeiler-Lehman-Tests für Graph-Isomorphie zu erreichen. Dieser bewährte Algorithmus entscheidet, ob zwei Graphen strukturell identisch sind, und erkennt in neuen Daten verdächtige Muster, indem er subtile Unterschiede in Strukturen aufspürt. GIN verwendet eine robuste Summenaggregation statt Durchschnitts- oder Max-Pooling-Methoden und bezieht die Anzahl der Nachbarn direkt ein. So erkennt es feine Unterschiede in der Graphstruktur, was anderen Methoden oft misslingt. **Das Graph Convolutional Network (GCN)** etwa mittelt die Eigenschaften aller Knoten und gewichtet Nachbarinformationen gleichmässig, wodurch unterschiedliche Graphstrukturen ununterscheidbar werden können. Zwei Knoten mit verschieden vielen Nachbarn können ähnliche Merkmale zeigen, wenn ihre Durchschnittswerte gleich sind. Die **GraphSAGE-Methode** bietet Durchschnitt, Max-Pooling und LSTM-Pooling zur Auswahl, doch bleibt das Problem bestehen: Die Aggregation erfasst oft nicht die feinen Unterschiede zwischen Graphstrukturen. 
 
 Nach der Summenaggregation verarbeitet ein neuronales Netzwerk (Multi-Layer Perceptron, MLP) das Ergebnis weiter und hilft dem Modell, komplexe Beziehungen und Muster im Graphen zu lernen. 
@@ -331,6 +332,7 @@ Ein weiterer Vorteil von GIN ist der Parameter ϵ, der die Gewichtung des Zielkn
 
 
 #### GINEConv von PyTorch 
+
 In unserem Projekt verwenden wir das GINEConv-Layer aus der PyTorch-Geometric-Bibliothek, eine Weiterentwicklung des klassischen Graph Isomorphism Network (GIN). Anders als GIN berücksichtigt GINEConv nicht nur die Knotenmerkmale, sondern auch die Kanteninformationen, wie Beträge oder Währungen. Das macht es besonders geeignet für Aufgaben, bei denen die Verbindungen zwischen den Knoten entscheidend sind, etwa die Klassifikation von Kanten. Ein GIN-Modell würde in unserem Fall lediglich die Kontoeigenschaften analysieren, wie die Häufigkeit oder Höhe empfangener Transaktionen. GINEConv hingegen bezieht zusätzlich die Transaktionsmerkmale ein. So erkennt das Modell nicht nur die Anzahl der Transaktionen, sondern auch auffällige Beträge oder ungewöhnliche Verbindungen. Durch die Kombination von Knoten- und Kanteninformationen bietet GINEConv eine umfassendere Netzwerkanalyse und entdeckt verdächtige Muster, die rein knotenbasierte Modelle möglicherweise übersehen.
 
 ##### GINe
