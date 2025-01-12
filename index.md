@@ -279,8 +279,8 @@ Ein entscheidender Vorteil des GFP ist seine Fähigkeit, dynamische Graphen zu v
 
 Wir nutzen die GFP-Daten unbalanciert und wenden die vier oben beschriebenen Sampling-Methoden an.
 
-
 #### GNN allgemein
+
 Graph-basierte neuronale Netzwerke (GNNs) ähneln klassischen neuronalen Netzwerken, unterscheiden sich jedoch grundlegend: Klassische Netzwerke verarbeiten Daten wie Bilder oder Töne in fester Reihenfolge, während Graphen keine solche Ordnung besitzen. Sie sind flexibel, ohne klaren Anfang oder Endpunkt. GNNs lösen dieses Problem, indem sie jeden Knoten als eigenständiges Netzwerk behandeln, das Informationen von Nachbarn aufnimmt und die Graphenstruktur berücksichtigt. Anders als klassische Netzwerke nutzen Knoten in einem GNN eine gemeinsame Gewichtsmatrix. Diese geteilten Gewichte ermöglichen es dem Modell, universelle Muster zu lernen, die auf alle Knoten anwendbar sind, unabhängig von deren Position oder Rolle im Graphen. Diese Methode eignet sich besonders für Aufgaben wie die Betrugserkennung, bei denen dieselben Regeln, etwa für verdächtige Transaktionen, auf alle Knoten übertragbar sind.
 
 <img src="assets/gnn.png" alt="gnn" class="hover-zoom" style="float: right; margin-left: 20px; width: 250px;">
