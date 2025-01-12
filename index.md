@@ -356,7 +356,7 @@ Im Post-Processing durchlaufen diese Merkmale weitere Schichten, um spezifische 
 
 <img src="assets/resultate_alle.png" alt="gnn" class="resultate_alle" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Die Grafik fasst die Ergebnisse der besten Modelle übersichtlich zusammen. Alle Modelle, außer den GNN-Modellen, wurden sowohl mit unbalancierten als auch mit balancierten Daten trainiert. Das GNN-Modell schnitt am besten ab und erreichte einen F1-Score von 0,60. Bemerkenswert ist, dass das nicht graphbasierte Modell XGBoost, trainiert mit nach der SMOTE-Methode gesampelten Daten, mit einem F1-Score von 0,56 fast gleichauf lag. Die Ergebnisse sind solide, lassen aber viel Spielraum für Verbesserungen. Unsere Arbeit bietet einen ersten Einstieg in dieses Thema. Die Umsetzung bleibt ausbaufähig; konkrete Verbesserungsvorschläge finden sich im Kapitel „Outlook“.
 
 
 
@@ -364,12 +364,12 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 <img src="assets/resultate_nichtgraphbasiert.png" alt="resultate_nichtgraphbasiert" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
+Die nicht-grafischen Modelle erreichen F1-Scores bis zu 0.56. Besonders XGBoost sticht hervor, da es oft über 0.5 liegt – ein Zeichen, dass das Modell tatsächlich lernt. Mit der Sampling-Methode SMOTE, den Originalmerkmalen und den manuell entwickelten Merkmalen, basierend auf den EDA-Erkenntnissen, erzielten wir das beste Ergebnis.
 
 <img src="assets/cf_ngb.png" alt="cf_ngb" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
+Die Grafik zeigt die Confusion Matrix des besten Modells, XGBoost mit SMOTE. Durch das Sampling entstanden zahlreiche zusätzliche betrügerische Transaktionen. Das Modell erkennt rund 28 Tausend legale Transaktionen als betrügerisch und 
+HIER FEHLT TEXT 
 
 
 ## Graph-basierte Modelle
@@ -378,15 +378,18 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 <img src="assets/resultate_GFP.png" alt="resultate_GFP" class="hover-zoom" style="float: left; margin-right: 20px; width: 150px;">
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+> Die Modelle mit den GFP Features ohne Sampling konnten noch nicht trainiert werden. Dies wird bis am 17.01. nachgeholt.
+Die Modelle mit GFP-Features lieferten nicht die erhofften besseren Ergebnisse. Nur die XGBoost-Modelle durchbrachen mit den Sampling-Methoden Oversampling und SMOTE die 0,50-Marke. Ein F1-Score von 0,51 bleibt jedoch unbefriedigend. Wir haben zwei Thesen: - Erstens könnten Fehler im Code zur Generierung der GFP-Features vorliegen, besonders bei der Datensortierung. GFP erfordert zwingend eine zeitliche Sortierung der Daten. Dies sollte dringend überprüft werden. 
+- Zweitens könnten die Sampling-Methoden die Mustererkennung beeinträchtigen. Die Features basieren auf der Graph-Struktur. Möglicherweise gelingt es den Sampling-Methoden nicht, diese erfolgreich nachzubilden. Diese These betrifft jedoch nur SMOTE und Adasyn, da Undersampling die Daten nicht verändert und Oversampling sie lediglich dupliziert.
 
 <img src="assets/cf_lightgbm_sampling.png" alt="cf_lightgbm_sampling" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Die Confusion-Matrizen des Modells LightGBM zeigen klare Unterschiede. Mit der Sampling-Methode Adasyn sagt das Modell alle betrügerischen Transaktionen korrekt voraus, stuft jedoch zugleich alle legalen Transaktionen als betrügerisch ein. Bei SMOTE bleibt das Problem bestehen: Das Modell erkennt zwar einige betrügerische Transaktionen nicht, markiert aber immer noch die Hälfte der legalen Transaktionen fälschlich als betrügerisch. Undersampling und Oversampling liefern ähnliche Ergebnisse. Bei beiden Methoden klassifiziert das Modell nur etwa 10 bis 15 Prozent der legalen Transaktionen falsch.
 
 <img src="assets/cf_xgboost_sampling.png" alt="cf_xgboost_sampling" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
- Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Die Confusion-Matrizen des Modells XGBoost weichen stark von denen von LightGBM ab. Ein wesentlicher Unterschied: XGBoost stuft deutlich mehr betrügerische Transaktionen fälschlicherweise als legal ein. Gleichzeitig klassifiziert es weniger legale Transaktionen irrtümlich als betrügerisch.
+
 
 
 ### GINe
@@ -395,7 +398,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
 
-<img src="assets/cf_lightgbm_sampling.png" alt="cf_lightgbm_sampling" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+<img src="assets/cf_gnn.png" alt="cf_gnn" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
