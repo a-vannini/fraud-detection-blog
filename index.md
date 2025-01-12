@@ -354,7 +354,7 @@ Im Post-Processing durchlaufen diese Merkmale weitere Schichten, um spezifische 
 
 # Resultate
 
-<img src="assets/resultate_alle.png" alt="gnn" class="resultate_alle" style="float: left; margin-right: 20px; width: 250px;">
+<img src="assets/resultate_alle.png" alt="gnn" class="resultate_alle" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
@@ -376,7 +376,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 ### GFP
 
-<img src="assets/resultate_GFP.png" alt="resultate_GFP" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
+<img src="assets/resultate_GFP.png" alt="resultate_GFP" class="hover-zoom" style="float: left; margin-right: 20px; width: 150px;">
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
@@ -391,7 +391,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 ### GINe
 
-<img src="assets/resultate_GNN.png" alt="resultate_GNN" class="resultate_GNN" style="float: right; margin-left: 20px; width: 250px;">
+<img src="assets/resultate_GNN.png" alt="resultate_GNN" class="resultate_GNN" style="float: right; margin-left: 20px; width: 150px;">
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
 
@@ -447,4 +447,3 @@ Liu, Z., Dou, Y., Yu, P. S., Deng, Y., & Peng, H. (2020). *Alleviating the Incon
 Sinayobye, J. O., Kiwanuka, F., & Kaawaase Kyanda, S. (2018). *A State-of-the-Art Review of Machine Learning Techniques for Fraud Detection Research.* SEIA 2018. [https://doi.org/10.1145/3195528.3195534](https://doi.org/10.1145/3195528.3195534) 
 
 Vashistha, A., & Tiwari, A. K. (2024). *Building Resilience in Banking Against Fraud with Hyper Ensemble Machine Learning and Anomaly Detection Strategies.* SN Computer Science, 5(556). [https://doi.org/10.1007/s42979-024-02854-w](https://doi.org/10.1007/s42979-024-02854-w)
-
