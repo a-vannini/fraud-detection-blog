@@ -377,7 +377,10 @@ Die Grafik präsentiert die Confusion Matrix des besten Modells, XGBoost mit SMO
 
 <img src="assets/resultate_GFP.png" alt="resultate_GFP" class="hover-zoom" style="float: left; margin-right: 20px; width: 150px;">
 
-Die Modelle mit GFP-Features lieferten nicht die erhofften besseren Ergebnisse. Nur die XGBoost-Modelle durchbrachen mit den Sampling-Methoden Oversampling und SMOTE die 0.50-Marke. Ein F1-Score von 0.51 bleibt jedoch unbefriedigend. Wir haben zwei Thesen: - Erstens könnten Fehler im Code zur Generierung der GFP-Features vorliegen, besonders bei der Datensortierung. GFP erfordert zwingend eine zeitliche Sortierung der Daten. Dies sollte dringend überprüft werden. 
+Die Modelle mit GFP-Features lieferten nicht die erhofften besseren Ergebnisse. Nur die XGBoost-Modelle durchbrachen mit den Sampling-Methoden Oversampling und SMOTE die 0.50-Marke. Ein F1-Score von 0.51 bleibt jedoch unbefriedigend. 
+
+Wir haben zwei Thesen: 
+- Erstens könnten Fehler im Code zur Generierung der GFP-Features vorliegen, besonders bei der Datensortierung. GFP erfordert zwingend eine zeitliche Sortierung der Daten. Dies sollte dringend überprüft werden. 
 - Zweitens könnten die Sampling-Methoden die Mustererkennung beeinträchtigen. Die Features basieren auf der Graph-Struktur. Möglicherweise gelingt es den Sampling-Methoden nicht, diese erfolgreich nachzubilden. Diese These betrifft jedoch nur SMOTE und Adasyn, da Undersampling die Daten nicht verändert und Oversampling sie lediglich dupliziert.
 
 <img src="assets/cf_lightgbm_sampling.png" alt="cf_lightgbm_sampling" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
