@@ -366,7 +366,7 @@ Die Grafik fasst die Ergebnisse der besten Modelle übersichtlich zusammen. Alle
 
 Die nicht-grafischen Modelle erreichen F1-Scores bis zu 0.56. Besonders XGBoost sticht hervor, da es oft über 0.5 liegt – ein Zeichen, dass das Modell tatsächlich lernt. Mit der Sampling-Methode SMOTE, den Originalmerkmalen und den manuell entwickelten Merkmalen, basierend auf den EDA-Erkenntnissen, erzielten wir das beste Ergebnis.
 
-<img src="assets/cf_ngb.png" alt="cf_ngb" class="hover-zoom" style="display: block; margin: 10px auto; width: 300px;">
+<img src="assets/cf_ngb.png" alt="gnn" class="cf_ngb" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
 Die Grafik präsentiert die Confusion Matrix des besten Modells, XGBoost mit SMOTE. Durch das Sampling entstanden viele zusätzliche betrügerische Transaktionen. Das Modell stuft etwa 28'455 legale Transaktionen fälschlicherweise als betrügerisch ein, während es 985'593 betrügerische Transaktionen übersieht und als legal einordnet.
 
@@ -377,7 +377,6 @@ Die Grafik präsentiert die Confusion Matrix des besten Modells, XGBoost mit SMO
 
 <img src="assets/resultate_GFP.png" alt="resultate_GFP" class="hover-zoom" style="float: left; margin-right: 20px; width: 150px;">
 
-> Die Modelle mit den GFP Features ohne Sampling konnten noch nicht trainiert werden. Dies wird bis am 17.01. nachgeholt.
 Die Modelle mit GFP-Features lieferten nicht die erhofften besseren Ergebnisse. Nur die XGBoost-Modelle durchbrachen mit den Sampling-Methoden Oversampling und SMOTE die 0.50-Marke. Ein F1-Score von 0.51 bleibt jedoch unbefriedigend. Wir haben zwei Thesen: - Erstens könnten Fehler im Code zur Generierung der GFP-Features vorliegen, besonders bei der Datensortierung. GFP erfordert zwingend eine zeitliche Sortierung der Daten. Dies sollte dringend überprüft werden. 
 - Zweitens könnten die Sampling-Methoden die Mustererkennung beeinträchtigen. Die Features basieren auf der Graph-Struktur. Möglicherweise gelingt es den Sampling-Methoden nicht, diese erfolgreich nachzubilden. Diese These betrifft jedoch nur SMOTE und Adasyn, da Undersampling die Daten nicht verändert und Oversampling sie lediglich dupliziert.
 
@@ -393,7 +392,7 @@ Die Confusion-Matrizen des Modells XGBoost weichen stark von denen von LightGBM 
 
 ### GINe
 
-<img src="assets/resultate_GNN.png" alt="resultate_GNN" class="resultate_GNN" style="float: right; margin-left: 20px; width: 150px;">
+<img src="assets/resultate_GNN.png" alt="resultate_GNN" class="hover-zoom" style="float: right; margin-left: 20px; width: 150px;">
 
 Die GNN Modelle steigern sich mit zunehmender Modell-Komplexität. Alle Modelle werden auf den unbalancierten Daten trainiert. Das Baseline-Modell erzielt dabei einen F1-Score von 0.58 und das beste Modell von HIER FEHLT TEXT.
 
