@@ -166,10 +166,10 @@ Für den nicht graph-basierten Ansatz nutzen wir Gradient Boosted Trees (GBT). D
 > - Zahlungsformat: Kreditkarte 
 > - Sender: Konto mit auffälligem Transaktionsmuster 
 
-Ein einzelner Entscheidungsbaum könnte dabei so aussehen: 
+
 <img src="assets/entscheidungsbaum.png" alt="entscheidungsbaum" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
-Dieser Baum liefert eine erste Einschätzung. GBT erstellt viele solcher Bäume und verbessert sie schrittweise, indem es sich auf die Fehler der vorherigen Bäume konzentriert. Erkennt der erste Baum einige betrügerische Transaktionen nicht, trainiert der nächste Baum gezielt darauf.
+Ein einzelner Entscheidungsbaum könnte dabei so aussehen. Dieser Baum liefert eine erste Einschätzung. GBT erstellt viele solcher Bäume und verbessert sie schrittweise, indem es sich auf die Fehler der vorherigen Bäume konzentriert. Erkennt der erste Baum einige betrügerische Transaktionen nicht, trainiert der nächste Baum gezielt darauf.
 
 
 ### Data-Split 
@@ -259,7 +259,7 @@ In unserem spezifischen Anwendungsfall zur Geldwäsche-Erkennung wählen wir ein
 
 ### Data-Split
 <img src="assets/WCC.png" alt="WCC" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
-Um die Daten sauber für Training und Evaluierung zu trennen, nutzen wir einen Community Split. Dieser Ansatz stellt sicher, dass die Datensätze vollständig getrennt bleiben und keine Informationen zwischen ihnen fließen. So verhindern wir effektiv Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten. Zunächst wandelten wir die tabellarischen Daten, wie im vorherigen Kapitel beschrieben, in einen Graphen um. Danach bestimmten wir die größte Weakly Connected Component (WCC), also den größten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. Dadurch bleibt der Graph konsistent und zusammenhängend. In unserem Fall umfasst die WCC 371'917 Konten und 1'496'497 Transaktionen – das entspricht 72% aller Konten, aber nur 29% der Transaktionen. Vermutlich liegt das daran, dass viele Konten laut unserer Analyse nur eine oder zwei Transaktionen tätigen oder empfangen. Der Anteil betrügerischer Transaktionen im WCC beträgt 0.66% statt nur 0.1%.
+Um die Daten sauber für Training und Evaluierung zu trennen, nutzen wir einen Community Split. Dieser Ansatz stellt sicher, dass die Datensätze vollständig getrennt bleiben und keine Informationen zwischen ihnen fliessen. So verhindern wir effektiv Data Leakage – das unbeabsichtigte Übertragen von Informationen zwischen Trainings-, Validierungs- und Testdaten. Zunächst wandelten wir die tabellarischen Daten, wie im vorherigen Kapitel beschrieben, in einen Graphen um. Danach bestimmten wir die grösste Weakly Connected Component (WCC), also den grössten Teilgraphen, in dem alle Knoten unabhängig von der Kantenrichtung verbunden sind. Dadurch bleibt der Graph konsistent und zusammenhängend. In unserem Fall umfasst die WCC 371'917 Konten und 1'496'497 Transaktionen – das entspricht 72% aller Konten, aber nur 29% der Transaktionen. Vermutlich liegt das daran, dass viele Konten laut unserer Analyse nur eine oder zwei Transaktionen tätigen oder empfangen. Der Anteil betrügerischer Transaktionen im WCC beträgt 0.66% statt nur 0.1%.
 
 Im nächsten Schritt teilen wir die Knoten mit dem Louvain-Algorithmus in Gruppen (Communities) ein. Dieser Algorithmus erkennt effizient Communities in grossen Netzwerken, indem er iterativ die Modularity maximiert – ein Mass für die Konzentration der Kanten innerhalb einer Community im Vergleich zu Kanten zwischen verschiedenen Communities. Der Louvain-Algorithmus hat zwei Phasen: Zuerst gruppiert er die Knoten einzeln in vorläufige Communities, um die Modularity lokal zu verbessern. Danach fasst er diese Communities zu Superknoten zusammen und wendet den Algorithmus rekursiv auf der neuen Graphenstruktur an. Dies wiederholt sich, bis sich die Modularity nicht weiter steigern lässt. 
 <img src="assets/louvain.png" alt="louvain" class="hover-zoom" style="display: block; margin: 10px auto; width: 400px;">
@@ -356,7 +356,7 @@ Im Post-Processing durchlaufen diese Merkmale weitere Schichten, um spezifische 
 
 <img src="assets/resultate_alle.png" alt="gnn" class="resultate_alle" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
-Die Grafik fasst die Ergebnisse der besten Modelle übersichtlich zusammen. Alle Modelle, außer den GNN-Modellen, werden sowohl mit unbalancierten als auch mit balancierten Daten trainiert. Das GNN-Modell schneidet am besten ab und erreicht einen F1-Score von 0.60 HIER FEHLT TEXT. Bemerkenswert ist, dass das nicht graphbasierte Modell XGBoost, trainiert mit nach der SMOTE-Methode gesampelten Daten, mit einem F1-Score von 0.56 fast gleichauf liegt. Die Ergebnisse sind solide, lassen aber viel Spielraum für Verbesserungen. Unsere Arbeit bietet einen ersten Einstieg in dieses Thema. Die Umsetzung bleibt ausbaufähig; konkrete Verbesserungsvorschläge finden sich im Kapitel „Outlook“.
+Die Grafik fasst die Ergebnisse der besten Modelle übersichtlich zusammen. Alle Modelle, ausser den GNN-Modellen, werden sowohl mit unbalancierten als auch mit balancierten Daten trainiert. Das GNN-Modell schneidet am besten ab und erreicht einen F1-Score von 0.60 HIER FEHLT TEXT. Bemerkenswert ist, dass das nicht graphbasierte Modell XGBoost, trainiert mit nach der SMOTE-Methode gesampelten Daten, mit einem F1-Score von 0.56 fast gleichauf liegt. Die Ergebnisse sind solide, lassen aber viel Spielraum für Verbesserungen. Unsere Arbeit bietet einen ersten Einstieg in dieses Thema. Die Umsetzung bleibt ausbaufähig; konkrete Verbesserungsvorschläge finden sich im Kapitel „Outlook“.
 
 
 
