@@ -7,7 +7,7 @@ layout: default
 
 Dieser Blogbeitrag zeigt, wie man Geldwäscheversuche mit Machine Learning erkennt. Wir präsentieren im Detail verschiedene Ansätze und teilen unsere Erfahrungen. Der Schwerpunkt liegt darauf, die Entwicklung von klassischen Machine-Learning-Algorithmen bis hin zu innovativen Graph Neural Networks zu erklären. Mit der Länge des Artikels wächst die Komplexität. Der Beitrag richtet sich an Leser, die ein Faible für Daten oder Statistik haben und mit dem Begriff "Modell" vertraut sind.
 
-Laut den Vereinten Nationen werden jährlich 2 bis 5 % des globalen BIP – etwa 800 Milliarden bis 2 Billionen US-Dollar – durch Geldwäsche verschleiert. Ein wiederkehrendes Problem in der Geldwäsche-Forschung ist die Verfügbarkeit realer Datensätze. Das AMLworld-Framework bietet hier eine Lösung, indem es synthetische Finanztransaktionen generiert, die reale Szenarien mit hoher Präzision nachbilden, einschliesslich bekannter Geldwäschemuster. Diese vollständig gelabelten Daten ermöglichen eine objektive Bewertung von Algorithmen (Altman et al., 2024). Grundlage des AMLworld-Frameworks ist der synthetische Datensatz [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml), mit dem auch wir in unserem Projekt arbeiteten und den wir im nächsten Kapitel vorstellen. 
+Laut den Vereinten Nationen werden jährlich 2 bis 5% des globalen BIP – etwa 800 Milliarden bis 2 Billionen US-Dollar – durch Geldwäsche verschleiert. Ein wiederkehrendes Problem in der Geldwäsche-Forschung ist die Verfügbarkeit realer Datensätze. Das AMLworld-Framework bietet hier eine Lösung, indem es synthetische Finanztransaktionen generiert, die reale Szenarien mit hoher Präzision nachbilden, einschliesslich bekannter Geldwäschemuster. Diese vollständig gelabelten Daten ermöglichen eine objektive Bewertung von Algorithmen (Altman et al., 2024). Grundlage des AMLworld-Frameworks ist der synthetische Datensatz [IBM Transactions for Anti Money Laundering (AML)](https://www.kaggle.com/datasets/ealtman2019/ibm-transactions-for-anti-money-laundering-aml), mit dem auch wir in unserem Projekt arbeiteten und den wir im nächsten Kapitel vorstellen. 
 
 
 # Die Daten
@@ -15,13 +15,13 @@ Der Datensatz umfasst 5'073'168 Transaktionen und 11 Variablen. Er beschreibt Tr
 Die Transaktionen erstrecken sich über 17 Tage ab dem 1. September 2022. Die meisten Daten stammen aus den ersten 10 Tagen, während die restlichen Tage weniger Aktivität zeigen. Auffällig ist das starke Ungleichgewicht: 99,9% der Transaktionen sind legal, nur 0,1% (5177) gelten als Geldwäsche. 
 <img src="assets/eda_tage.png" alt="eda_tage" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
-Der Datensatz umfasst 30'470 Banken und 515'080 Konten. Eine kleine Anzahl von Banken und Konten wickelt den Grossteil der Transaktionen ab: Die 10 aktivsten Banken verantworten 18,1% aller Transaktionen. Bei den Konten gibt es zentrale Akteure, von denen einige über 100.000 Transaktionen ausführen, während viele andere nur ein- oder zweimal aktiv sind. 
+Der Datensatz umfasst 30'470 Banken und 515'080 Konten. Eine kleine Anzahl von Banken und Konten wickelt den Grossteil der Transaktionen ab: Die 10 aktivsten Banken verantworten 18,1% aller Transaktionen. Bei den Konten gibt es zentrale Akteure, von denen einige über 100'000 Transaktionen ausführen, während viele andere nur ein- oder zweimal aktiv sind. 
 <img src="assets/eda_top30banken.png" alt="eda_top30banken" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
 Die Transaktionsbeträge, sowohl ein- als auch ausgehend, variieren stark. Meistens handelt es sich um kleine Beträge, doch einige extrem hohe Summen (bis zu 1 Billion USD) verzerren den Durchschnitt. Zur besseren Analyse wurden die Beträge in US-Dollar umgerechnet. 
 <img src="assets/eda_beträge.png" alt="eda_beträge" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
-US-Dollar und Euro dominieren die Transaktionen, während Währungen wie Bitcoin oder Saudi Riyal selten vorkommen. Interessant ist, dass 98,6 % der Transaktionen in derselben Währung erfolgen, nur 1,4 % beinhalten Währungsumrechnungen. 
+US-Dollar und Euro dominieren die Transaktionen, während Währungen wie Bitcoin oder Saudi Riyal selten vorkommen. Interessant ist, dass 98.6% der Transaktionen in derselben Währung erfolgen, nur 1.4 % beinhalten Währungsumrechnungen. 
 Der Datensatz unterscheidet sieben Zahlungsmethoden, darunter Schecks, Kreditkarten, ACH (Automated Clearing House), Bargeld und Bitcoin. Schecks dominieren, während Bitcoin, trotz seiner zunehmenden Nutzung in der Geldwäsche, selten vorkommt.  
 <img src="assets/eda_zahlungsformat.png" alt="eda_zahlungsformat" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
@@ -69,7 +69,7 @@ Diese Struktur verschleiert die Geldspur durch Streuung und spätere Zusammenfü
 
 # Herausforderung und Evaluierung von Modellen 
 Zunächst müssen wir verstehen, welche Herausforderungen Machine-Learning-Modelle bewältigen und wie wir ihre Leistung messen. In der Welt des maschinellen Lernens begegnen wir oft Datensätzen mit unausgewogener Klassenverteilung. Das bedeutet, eine Klasse – etwa betrügerische Transaktionen – tritt deutlich seltener auf als die andere, wie legitime Transaktionen. Diese seltene Klasse heisst Minority-Class (Minderheitsklasse).
-Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herkömmliche Metriken wie die Genauigkeit (Accuracy) oft in die Irre führen. Ein Modell könnte etwa 99 % Genauigkeit erzielen, indem es stets die Mehrheitsklasse (legitime Transaktionen) vorhersagt, dabei jedoch keine betrügerischen Transaktionen erkennt. Hier greift der Minority-Class F1-Score ein. Der F1-Score balanciert Präzision und Recall aus. Diese beiden Masse sind entscheidend, um die Leistung eines Modells bei der Erkennung der Minderheitsklasse zu bewerten.
+Die Herausforderung bei der Arbeit mit solchen Daten besteht darin, dass herkömmliche Metriken wie die Genauigkeit (Accuracy) oft in die Irre führen. Ein Modell könnte etwa 99% Genauigkeit erzielen, indem es stets die Mehrheitsklasse (legitime Transaktionen) vorhersagt, dabei jedoch keine betrügerischen Transaktionen erkennt. Hier greift der Minority-Class F1-Score ein. Der F1-Score balanciert Präzision und Recall aus. Diese beiden Masse sind entscheidend, um die Leistung eines Modells bei der Erkennung der Minderheitsklasse zu bewerten.
 
 **Präzision** gibt an, wie viele der als betrügerisch eingestuften Transaktionen tatsächlich betrügerisch sind. 
 
@@ -95,7 +95,7 @@ Ein hoher F1-Score für die Minderheitsklasse zeigt, dass das Modell sowohl prä
 
 <img src="assets/confusion_matrix1.png" alt="confusion_matrix1" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 
-> Ein Beispiel: Stellen wir uns einen Datensatz mit 50 Transaktionen vor, von denen 2 % betrügerisch sind. Eine
+> Ein Beispiel: Stellen wir uns einen Datensatz mit 50 Transaktionen vor, von denen 2% betrügerisch sind. Eine
 > Transaktion ist betrügerisch (True Positive, wenn korrekt erkannt). Das Modell markiert jedoch fälschlicherweise zwei 
 > weitere Transaktionen als betrügerisch (False Positives) und übersieht die betrügerische Transaktion (False Negative).
 
@@ -142,7 +142,7 @@ Das folgende Kapitel beschreibt Methoden, die unsere Arbeit inspirierten.
 # Vorstellung Modellansätze aus Papers 
 Liu et al. (2020) konzentrierten sich auf die Verbesserung von Graph Neural Networks (GNNs), die vielversprechend für die Analyse relationaler Daten sind. Sie entwickelten das Framework **GraphConsis**, um Inkonsistenzen in Graphdaten zu beheben. Solche Inkonsistenzen entstehen, wenn Betrüger ihre Verbindungen tarnen, indem sie scheinbar normale Netzwerke aufbauen. GraphConsis filtert diese Störungen und identifiziert konsistente Nachbarschaftsstrukturen, was die Erkennungsleistung in realen Datensätzen signifikant verbessert.  
  
-Ein weiterer Ansatz ist der **Graph Feature Preprocessor (GFP)**, der speziell für die Echtzeit-Erkennung von Geldwäschemustern wie Simple Cycles oder Scatter-Gather entwickelt wurde. Dieses Tool extrahiert Merkmale aus Finanztransaktionsgrafen und erweitert traditionelle Machine-Learning-Modelle wie Gradient Boosted Trees. Die Kombination dieser Modelle mit Graph-Features steigerte die F1-Score für die Erkennung von Minderheitsklassen um bis zu 36 %, was die Bedeutung von Graph-basierten Features für die Betrugserkennung unterstreicht (Blanuša et al., 2024).  
+Ein weiterer Ansatz ist der **Graph Feature Preprocessor (GFP)**, der speziell für die Echtzeit-Erkennung von Geldwäschemustern wie Simple Cycles oder Scatter-Gather entwickelt wurde. Dieses Tool extrahiert Merkmale aus Finanztransaktionsgrafen und erweitert traditionelle Machine-Learning-Modelle wie Gradient Boosted Trees. Die Kombination dieser Modelle mit Graph-Features steigerte die F1-Score für die Erkennung von Minderheitsklassen um bis zu 36%, was die Bedeutung von Graph-basierten Features für die Betrugserkennung unterstreicht (Blanuša et al., 2024).  
 
 Egressy et al. leisteten einen innovativen Beitrag, indem sie gerichtete Multigraphen in den Fokus rückten. Sie passten GNNs für diese komplexen Strukturen an und erkannten durch Techniken wie **Reverse Message Passing** und **Port-Nummerierung** effizient Muster wie Zyklen und Scatter-Gather. Dieser Ansatz verbesserte die Erkennungsrate von Geldwäsche-Transaktionen um bis zu 30%. Parallel dazu setzte die Forschung zu Ensemble-Modellen neue Massstäbe.
 
@@ -161,7 +161,7 @@ Nicht graph-basierte Modelle analysieren Transaktionen isoliert. Sie ignorieren 
 Für den nicht graph-basierten Ansatz nutzen wir Gradient Boosted Trees (GBT). Diese Methode kombiniert viele einfache Entscheidungsbäume, um Vorhersagen zu verbessern. Entscheidungsbäume teilen Daten durch Ja/Nein-Fragen in Kategorien. 
 
 > Ein Beispiel: Wir wollen prüfen, ob eine Transaktion betrügerisch ist. Die Daten: 
-> - Betrag: 15.000 USD 
+> - Betrag: 15'000 USD 
 > - Währung: Bitcoin 
 > - Zahlungsformat: Kreditkarte 
 > - Sender: Konto mit auffälligem Transaktionsmuster 
@@ -190,10 +190,10 @@ Wir implementieren zwei Varianten von Gradient Boost Modellen:
 
 #### XGBoost
 
-XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0,1 % Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
+XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-Source-Bibliothek besticht durch hohe Geschwindigkeit und Flexibilität. Der Algorithmus kombiniert Entscheidungsbäume, wobei jeder Baum die Fehler des vorherigen korrigiert. XGBoost zeichnet sich besonders dadurch aus, dass es gezielt unausgewogene Datensätze wie unseren Geldwäsche-Datensatz bearbeitet. Es nutzt gewichtetes Training, um die Erkennung seltener Klassen, etwa betrügerischer Transaktionen, zu verbessern. Bei einem Anteil von 0.1% Geldwäsche-Transaktionen könnte ein Modell ohne Anpassungen alle Transaktionen als "legitim" einstufen und dennoch hohe Genauigkeit erreichen. Um dies zu verhindern, ermöglicht XGBoost, der Verlustfunktion einen Gewichtungsfaktor hinzuzufügen. Dieser Faktor verleiht den seltenen Klassen mehr Gewicht, sodass das Modell sie präziser klassifiziert. 
 
-> Wieder unser Beispiel: Betrachten wir die 50 Transaktionen, von denen 2 %, also eine, betrügerisch ist. Ohne 
-> Klassengewichtung könnte das Modell alle Transaktionen als "legitim" einstufen und dennoch 98 % Genauigkeit erreichen. Das
+> Wieder unser Beispiel: Betrachten wir die 50 Transaktionen, von denen 2%, also eine, betrügerisch ist. Ohne 
+> Klassengewichtung könnte das Modell alle Transaktionen als "legitim" einstufen und dennoch 98% Genauigkeit erreichen. Das
 > wäre nutzlos, da keine betrügerische Transaktion erkannt würde. Um dies zu verhindern, geben wir der Klasse "betrügerisch"
 > eine höhere Gewichtung, etwa den Faktor 49, basierend auf dem Verhältnis von legitimen zu betrügerischen Transaktionen. So
 > wird der Fehler, eine betrügerische Transaktion zu übersehen, 49-mal stärker bestraft als der Fehler, eine legitime 
@@ -202,9 +202,9 @@ XGBoost erweitert das Gradient Boosting durch mehrere Optimierungen. Diese Open-
 <img src="assets/logloss.png" alt="logloss" class="hover-zoom" style="float: right; margin-left: 20px; width: 200px;">
 XGBoost nutzt zudem spezielle Optimierungen für Klassifikationsprobleme, wie Log-Loss. Diese Funktion misst, wie gut die vorhergesagte Wahrscheinlichkeit mit der tatsächlichen Klasse übereinstimmt. Bei einer betrügerischen Transaktion soll das Modell eine Wahrscheinlichkeit nahe 1 liefern, bei legitimen nahe 0. Weicht die Vorhersage stark von der tatsächlichen Klasse ab, bestraft die Funktion das Modell stärker. So trifft das Modell nicht nur Entscheidungen, sondern liefert auch zuverlässige Wahrscheinlichkeiten. 
 
-- Das Modell schätzte die erste Transaktion (betrügerisch) mit einer hohen Wahrscheinlichkeit von 0,80 ein. Diese liegt nahe an der tatsächlichen Klasse, daher bleibt der Log-Loss-Beitrag gering (0,223).  
-- Bei der zweiten Transaktion (legitim) sagte das Modell korrekt eine niedrige Wahrscheinlichkeit von 0,20 voraus, was ebenfalls zu einem kleinen Log-Loss-Beitrag führt.  
-- Bei der dritten Transaktion (legitim) prognostizierte das Modell jedoch fälschlicherweise eine hohe Wahrscheinlichkeit von 0,90 für "betrügerisch". Dieser Fehler wird stark bestraft (2,302).  
+- Das Modell schätzte die erste Transaktion (betrügerisch) mit einer hohen Wahrscheinlichkeit von 0.80 ein. Diese liegt nahe an der tatsächlichen Klasse, daher bleibt der Log-Loss-Beitrag gering (0.223).  
+- Bei der zweiten Transaktion (legitim) sagte das Modell korrekt eine niedrige Wahrscheinlichkeit von 0.20 voraus, was ebenfalls zu einem kleinen Log-Loss-Beitrag führt.  
+- Bei der dritten Transaktion (legitim) prognostizierte das Modell jedoch fälschlicherweise eine hohe Wahrscheinlichkeit von 0.90 für "betrügerisch". Dieser Fehler wird stark bestraft (2302).  
 Der Gesamt-Log-Loss ergibt sich aus dem Durchschnitt der einzelnen Beiträge. 
 
 #### LightGBM
@@ -225,7 +225,7 @@ Beim **Undersampling** reduzieren wir die Grösse der Mehrheitsklasse, indem wir
 
 Beim **Oversampling** wird die Minderheitsklasse künstlich vergrössert, indem bestehende Datenpunkte dupliziert werden. Dadurch bleibt die Grösse der Mehrheitsklasse erhalten, während die Minderheitsklasse vergrössert wird. In unserem Beispiel würde die eine Transaktion dupliziert, bis es 49 betrügerische Transaktionen gäbe. Da dieselben Datenpunkte dadurch mehrmals verwendet werden, besteht die Gefahrt von Overfitting. 
 
-**SMOTE** ist eine fortschrittliche Oversampling-Methode, die synthetische Datenpunkte für die Minderheitsklasse erzeugt, statt bestehende zu kopieren. Sie berechnet Zwischenwerte zwischen vorhandenen Datenpunkten der Minderheitsklasse, um neue zu schaffen. Bei zwei betrügerischen Transaktionen von 10.000 USD und 20.000 USD erzeugt SMOTE eine neue Transaktion mit einem Betrag zwischen diesen Werten, etwa 17.000 USD. 
+**SMOTE** ist eine fortschrittliche Oversampling-Methode, die synthetische Datenpunkte für die Minderheitsklasse erzeugt, statt bestehende zu kopieren. Sie berechnet Zwischenwerte zwischen vorhandenen Datenpunkten der Minderheitsklasse, um neue zu schaffen. Bei zwei betrügerischen Transaktionen von 10'000 USD und 20'000 USD erzeugt SMOTE eine neue Transaktion mit einem Betrag zwischen diesen Werten, etwa 17'000 USD. 
 
 **ADASYN** erweitert SMOTE, indem es sich auf schwer klassifizierbare Datenpunkte konzentriert. Während SMOTE Datenpunkte gleichmässig erzeugt, generiert ADASYN mehr synthetische Punkte dort, wo die Minderheitsklasse schwächer vertreten ist. ADASYN bewertet die Schwierigkeit, jeden Punkt der Minderheitsklasse korrekt zu klassifizieren. Bei zwei betrügerischen Transaktionen – eine mit seltenem und eine mit üblichem Währungsformat – erstellt ADASYN mehr synthetische Transaktionen für die seltene Währung, da diese schwerer zu klassifizieren ist. 
 
@@ -345,7 +345,7 @@ Das Modell GINe2 erweitert seinen Vorgänger GINe um mehrere konfigurierbare Opt
 Ohne Dropout stuft das Modell etwa vor allem Transaktionen mit ungewöhnlich hohen Beträgen als verdächtig ein, da diese im Training oft als Betrug markiert wurden. Mit Dropout berücksichtigt es zusätzlich andere Merkmale wie die Anzahl der Transaktionen, die Währung oder die Verbindungsfrequenz zwischen bestimmten Konten. So erkennt es sowohl offensichtliche als auch versteckte Muster, etwa ein auffälliges Netzwerk kleiner, häufiger Zahlungen. Ist Dropout aktiviert, greift es sowohl bei der Verarbeitung der Kantenattribute als auch in den abschliessenden Schichten des Modells.
 
 ##### GINe3
-Das GINe3-Modell erweitert frühere Versionen durch zusätzliche **Pre- und Post-Processing-Schichten**, die die Knoteneigenschaften vor und nach der GNN-Verarbeitung gezielt verfeinern. 
+Das GINe3-Modell erweitert frühere Versionen durch zusätzliche **Pre- und Post-Processing-Schichten**, welche die Knoteneigenschaften vor und nach der GNN-Verarbeitung gezielt verfeinern. 
 
 Die Pre-Processing-Schicht bereitet die Rohdaten der Knoten in mehreren Schritten auf: Lineare Transformationen, Aktivierungsfunktionen wie ReLU (Rectified Linear Unit), Batch-Normalisierung und optional Dropout bringen die Eingangsdaten in eine Form, die optimal für die GNN-Verarbeitung geeignet ist. So werden beispielsweise Transaktionsbeträge skaliert oder normalisiert, um extreme Ausreisser wie ungewöhnlich hohe Summen zu dämpfen und die Werte in einen einheitlichen Bereich zu überführen. Nach der GNN-Verarbeitung entstehen aggregierte Merkmale, die Informationen aus Knoten und Kanten kombinieren. 
 
@@ -358,7 +358,7 @@ Im Post-Processing durchlaufen diese Merkmale weitere Schichten, um spezifische 
 
 <img src="assets/resultate_alle.png" alt="gnn" class="resultate_alle" class="hover-zoom" style="float: left; margin-right: 20px; width: 200px;">
 
-Die Grafik fasst die Ergebnisse der besten Modelle übersichtlich zusammen. Alle Modelle, ausser den GNN-Modellen, werden sowohl mit unbalancierten als auch mit balancierten Daten trainiert. Das GNN-Modell schneidet am besten ab und erreicht einen F1-Score von 0.60 HIER FEHLT TEXT. Bemerkenswert ist, dass das nicht graphbasierte Modell XGBoost, trainiert mit nach der SMOTE-Methode gesampelten Daten, mit einem F1-Score von 0.56 fast gleichauf liegt. Die Ergebnisse sind solide, lassen aber viel Spielraum für Verbesserungen. Unsere Arbeit bietet einen ersten Einstieg in dieses Thema. Die Umsetzung bleibt ausbaufähig; konkrete Verbesserungsvorschläge finden sich im Kapitel „Outlook“.
+Die Grafik fasst die Ergebnisse der besten Modelle übersichtlich zusammen. Alle Modelle, ausser den GNN-Modellen, werden sowohl mit unbalancierten als auch mit balancierten Daten trainiert. Das GNN-Modell schneidet am besten ab und erreicht einen F1-Score von 0.60. Bemerkenswert ist, dass das nicht graphbasierte Modell XGBoost, trainiert mit nach der SMOTE-Methode gesampelten Daten, mit einem F1-Score von 0.56 fast gleichauf liegt. Die Ergebnisse sind solide, lassen aber viel Spielraum für Verbesserungen. Unsere Arbeit bietet einen ersten Einstieg in dieses Thema. Die Umsetzung bleibt ausbaufähig; konkrete Verbesserungsvorschläge finden sich im Kapitel „Outlook“.
 
 
 
@@ -399,7 +399,7 @@ Die Confusion-Matrizen des Modells XGBoost weichen stark von denen von LightGBM 
 
 <img src="assets/resultate_GNN.png" alt="resultate_GNN" class="hover-zoom" style="float: right; margin-left: 20px; width: 150px;">
 
-Die GNN Modelle steigern sich mit zunehmender Modell-Komplexität. Alle Modelle werden auf den unbalancierten Daten trainiert. Das Baseline-Modell erzielt dabei einen F1-Score von 0.58 und das beste Modell von HIER FEHLT TEXT.
+Die GNN Modelle steigern sich mit zunehmender Modell-Komplexität. Alle Modelle werden auf den unbalancierten Daten trainiert. Das Baseline-Modell erzielt dabei einen F1-Score von 0.58 und das beste Modell GINe2 von 0.6. Das verfeinerte Modell GINe3 mag sich nicht mehr weiter verbessern. 
 
 
 
